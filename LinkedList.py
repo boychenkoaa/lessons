@@ -100,20 +100,3 @@ class LinkedList:
     @property        
     def isEmpty(self):
         return self.head is None
-            
-li = LinkedList()
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.add_in_tail(Node(4))
-li.print_all_nodes()
-li.delete(4, all=True)
-li.print_all_nodes()
-print(li.head, li.tail)
-li.insert(li.head, Node(5))
-li.print_all_nodes()
-print(li.find_all(4))
-print(li.len())
