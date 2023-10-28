@@ -24,14 +24,6 @@ class LinkedList:
             node = node.next
         return ans
         
-    def print_all_nodes(self):
-        node = self.head
-        while node != None:
-            print(node.value, end=' ')
-            node = node.next
-        print('')
-        
-        
     def find(self, val):
         node = self.head
         while node != None:
@@ -52,7 +44,7 @@ class LinkedList:
     def delete(self, val, all=False):
         if self.isEmpty:
             return
-                    
+        
         prehead = Node(None)
         prehead.next = self.head
         item = prehead
@@ -64,9 +56,14 @@ class LinkedList:
             else:
                 item = item.next
         
+        if prehead.next is None:
+            self.clean()
+            return
+        
         self.head = prehead.next
-        prehead = None # !!!
-        self.tail = item
+        if item.next == None:
+            self.tail = item
+
                 
     def clean(self):
         self.head = None
@@ -78,7 +75,7 @@ class LinkedList:
         while node != None:
             ans += 1
             node = node.next        
-        return ans # здесь будет ваш код
+        return ans 
 
     def insert(self, afterNode, newNode):
         if self.isEmpty:
@@ -100,7 +97,6 @@ class LinkedList:
     @property        
     def isEmpty(self):
         return self.head is None
-
     
 def list_sum(list1: LinkedList, list2: LinkedList):
     if list1.len() == list2.len():
@@ -113,3 +109,4 @@ def list_sum(list1: LinkedList, list2: LinkedList):
             node2 = node2.next
         return ans
     return None
+
