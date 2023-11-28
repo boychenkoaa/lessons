@@ -96,7 +96,21 @@ class Test_OSL(unittest.TestCase):
         self.assertEqual(ol.values(), ["4"])
         ol.delete("4")
         self.assertEqual(ol.values(), [])
-                
+        
+    
+    def test_add_del(self):
+        ol = OrderedStringList(True)
+        ol.add(" string4  ")
+        ol.add("  string1  ")
+        ol.add("string3  ")
+        ol.add("  string2")
+        self.assertEqual(ol.values(), ["  string1  ", "  string2", "string3  ", " string4  "])
+        ol.delete("  string2")
+        self.assertEqual(ol.values(), ["  string1  ", "string3  ", " string4  "])
+        ol.delete("  string3")
+        self.assertEqual(ol.values(), ["  string1  ", " string4  "])
+        ol.add("string2 2 ")
+        self.assertEqual(ol.values(), ["  string1  ", "string2 2 ", " string4  "])
             
 if __name__ == '__main__':
     unittest.main()

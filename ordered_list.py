@@ -35,7 +35,7 @@ class OrderedList:
         
         def add_body(afterNode, newNode):
             newNode.next = afterNode.next
-            newNode.prev = newNode.after
+            newNode.prev = afterNode
             afterNode.next.prev = newNode
             afterNode.next = newNode            
             
