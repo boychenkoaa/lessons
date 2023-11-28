@@ -5,9 +5,9 @@ class test_hash(unittest.TestCase):
     
     def test_hashfun(self):
         h = HashTable(sz = 121, stp = 1)
-        self.assertEqual(h.hash_fun("abcabc"), 99)
-        self.assertEqual(h.hash_fun("abcabb"), 98)
-        self.assertEqual(h.hash_fun("abcabA"), 65)
+        self.assertEqual(h.hash_fun("cabcabc"), 99)
+        self.assertEqual(h.hash_fun("babcabb"), 98)
+        self.assertEqual(h.hash_fun("AbcabA"), 65)
         self.assertEqual(h.hash_fun("A"), 65)
         self.assertEqual(h.hash_fun(""), 0)
         self.assertEqual(h.hash_fun("z"), 1)
@@ -25,15 +25,17 @@ class test_hash(unittest.TestCase):
         self.assertEqual(h.seek_slot("aaaa"), None)
         
     def test_put(self):
-        h = HashTable(sz = 5, stp = 1)
+        h = HashTable(sz = 5, stp = 2)
+        h.put("")
+        self.assertEqual(h.slots, ["", None, None, None, None])        
         h.put("a")
-        self.assertEqual(h.slots, [None, None, "a", None, None])
+        self.assertEqual(h.slots, ["", None, "a", None, None])
         h.put("aa")
-        self.assertEqual(h.slots, [None, None, "a", "aa", None])
+        self.assertEqual(h.slots, ["", None, "a", None, "aa"])
         h.put("aaa")
-        self.assertEqual(h.slots, [None, None, "a", "aa", "aaa"])
+        self.assertEqual(h.slots, ["", "aaa", "a", None, "aa"])
         h.put("aaaa")
-        self.assertEqual(h.slots, ["aaaa", None, "a", "aa", "aaa"])
+        self.assertEqual(h.slots, ["", "aaa", "a", "aaaa", "aa"])
     
     def test_find(self):
         h = HashTable(sz = 5, stp = 1)

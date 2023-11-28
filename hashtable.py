@@ -7,7 +7,7 @@ class HashTable:
     def hash_fun(self, value):
         if value == "":
             return 0
-        ans = ord (value[-1]) % self.size
+        ans = ord (value[0]) % self.size
         return ans
 
     def seek_slot(self, value):
