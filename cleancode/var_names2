@@ -1,0 +1,24 @@
+6.1
+manager -- selection_manager
+idef -- active_entity_definition
+curve -- curve_2d
+poly -- curve_polyline
+idoc_type -- active_document_type
+
+6.2
+polylines -- polylines_container
+main_fsm 
+points_mediator
+contour_tree
+
+6.3
+arc_list -- polyline_arc_list 
+holes -- source_polygon_holes
+depth -- buffer_depth
+
+6.4
+ksdoc2d -- kompas_document_2d
+dr_cont -- drawing_contour
+seg -- segment
+pt_num -- point_number
+tostr_tpl -- tuple_to_str
