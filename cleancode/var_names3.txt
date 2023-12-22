@@ -1,0 +1,73 @@
+7.1 Улучшаем имена
+i_p - has_internal_point
+
+not_activated - is_activated
+
+unverifiable - is_verifiable
+
+# тут я вообще теряюсь...
+type_inf - is_multi_polygon 
+
+upd - updated
+
+7.2 Стандартные имена
+# когда активный документ в компасе оказался не трехмерным 
+if (kompas_document_3d_5 is None) or (kompas_document_3d_7 is None):
+	error = True
+
+# наличие точки в хранилище
+point_found = not ( (self._points[point_id] is None) or (self._geom_graph[point_id] is None))
+
+# успех если пересечения нет
+success = (intersection == Intersection.COLLINEAR)
+
+7.3.
+# коллега -- перфекционист, я бы i оставил :)
+for edge_index in range(status_edges_list.len())
+for point_number in range(count * 2)
+for axis in range(3)
+
+# когда индексы идут не подряд (например, уже прорежены на предыдущих шагах алгоритма) -- имя счетчика просится само
+for edge_index in status_edges_index_list
+
+7.4
+# постоянно использую begin/end 
+# в алгоритмах на геометрию важно направление обхода контура. 
+# когда работаешь с отдельными его отрезками всегда важно, где у него начало а где конец
+ax = self.end[X] - self.begin[X]
+ay = self.end[Y] - self.begin[Y]
+bx = point[X] - self.begin[X]
+by = point[Y] - self.begin[Y]
+
+7.5
+# таких мест довольно много, вот типовой пример
+cross_type, s = self.is_intersect(other)
+# имя s здесь взято с потолка. Исправляю
+cross_type, param_t = self.is_intersect(other)
+
+# ---
+# Для разнообразия приведу обратный пример пример
+# когда есть литература с готовыми обозначениями -- в формулах
+# и при отладке удобство сличения формулы с книгой важнее читабельности кода как такового
+# главное дать ссылку на книгу или рисунок в комментариях
+
+# наоборот -- делаем точки безликими, но по рисунку
+a = other.beg
+b = other.end
+c = self.beg
+d = self.end
+
+# вектора
+n = (d[Y] - c[Y], c[X] - d[X]) 
+ba = (b[X] - a[X], b[Y] - a[Y])
+ca = (a[X] - c[X], a[Y] - c[Y])
+
+# отошел от книги и решил посчитать числитель и знаменатель дроби отдельно, имена стали осмысленными
+denominator = dot(n, ba)
+numerator = dot(n, ca)
+
+# результат тоже однобуквенный - для соответствия книге
+t = - numerator / denominator
+
+# именно здесь числитель и знаменатель считать отдельно избыточно. Я это делал при отладке (выскочило деление на ноль) и поленился убрать. Поправляю.
+t = - dot(n, сa) / dot(n, ba)
