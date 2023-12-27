@@ -1,0 +1,18 @@
+имена классов 
+Backend -> GeomKernel
+CommandManager -> CommandReceiver
+CommandController ->  CommandTranslator
+CommandTranslator, GeomConverter -> CommandDictConverter, GeomConverter
+GetDataQuery -> GetAllPointsQuery
+QueryDispatcher -> QueryFabrique
+
+имена объектов и методов
+geom_storage, geom_container, geom_collection -> geom_storage
+raw_data -> raw_geom_list
+query_result, query_response, query_answer -> query_response
+generalize(), simplify(), make_rough() -> generalize()
+delete_by_id(), remove_by_id() -> remove_by_id
+add(), push(), put() -> add
+do_command(), execute_command() -> execute_command()
+
+
