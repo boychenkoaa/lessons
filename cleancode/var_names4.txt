@@ -1,1 +1,13 @@
+1. vertex, point, node -> vertex  (алгоритмы на графах)
+2. kompas_document, idocument, idocument7, document7 -> document7  (объект-указатель на документ Компас-3D в API версии 7)
+3. dot, dot_product, cross_product -> dot_product (джун назвал скалярное произведение cross product -- перепутал с векторным)
+4. file -> config_json_file
+5. num_edge -> edge_num
+6. speed -> weld_speed_mm_min, free_speed_cm_min (скорость робота. Тут безопасность не только программная, но и физическая, для оператора робота...)
+7. entity -> variant_geom_entity (выбрать мышкой пользователь может что угодно)
+8. manager -> selection_manager
+9. selection -> selected_objects_tuple
+10. si_curve -> is_self_intersect (является ли кривая самопересекающейся)
+11. pr_func -> projection_function (для разных типов проецирования)
+12. simplify -> simplify_mode (как упрощать геометрию)
 
