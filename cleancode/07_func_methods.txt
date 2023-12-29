@@ -1,1 +1,13 @@
+1. state() -> get_robot_state() 
+2. parse -> parse_pc_prog (парсер программы на специфичном языке AS для роботов кавасаки)
+3. wait_recv() -> wait_robot_responce(), parse_error_str(error_str:str) (разделили на 2 метода)
+4. Layers.is_exist(layer_id) -> Layers.has_layer(layer_id) (has более правильно звучит по отношению к коллекции слоев)
+5. get_inner_ids(front_id, back_id) -> get_inner_id_list(front_id, back_id)
+6. graph.clipping() -> graph.trim() ("стрижка" графа -- обрезка висячих вершин)
+7. kd_tree.nearest(point) -> kd_tree.get_nearest_node_for_point(point) (раскрыл смысл)
+8. smart_buffer(polygon) -> polygon_buffer(polygon) (smart -- безликое слово в данном случае)
+9. cut_poly_with_pline(poly_list) -> cut_polygon_by_pline(polygon) (была путаница между полигоном и полилинией)
+10. cut(primitive) -> cut_linear_geom(linear_geom) (контура или полилинии)
+11. DCEL.move_point_at_dcel(id_) -> DCEL.move_vertex(vertex_id) (в методе указание на принадлежность избыточно)
+12. Points.find(co:tuple) -> Point.find_point(point:tuple) (еще одно уточнение)
 
