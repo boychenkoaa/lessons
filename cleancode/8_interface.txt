@@ -1,0 +1,48 @@
+3.1.
+3.1.1 
+для геометрии очень актуальны подобные конструкторы-фабрики
+class Polygon:
+	def from_contour_list(self, contour_list: list):
+		pass
+
+class Polyline(LinearEntity):
+	def from_xy_list(self, xy_list: list):
+		pass
+
+3.1.2 
+найдем примеры не только из геометрии
+команда копирования
+class copy_command
+	def from_spec_params(self, geom_id: int, point_from: Point, point_to: Point):
+		pass
+
+3.1.3
+KD-дерево из списка
+class kd_tree
+	def from_co_list(self, co_list:list):
+		pass
+
+3.2.
+3.2.1
+команда типа "применить алгоритм" - абстрактный класс, наследники уже реализуют конкретные алгоритмы
+iApplyAlgoCommand -> ApplyAlgoCommand
+
+соответственно, наследники
+ApplyBentleyAlgoCommand()
+ApplyShrinkAlgoCommand()
+ApplyCopyAlgoCommand()
+
+3.2.2
+хранилище для точек
+iPoints -> PointContainer
+реализации
+SimplePointContainer
+FastPointContainer
+KDPointContainer
+
+3.2.3 
+iMediator - тут вообще ошибка проектирования, я так понимаю что медиатор-интерфейс это уже перебор.
+оставляю только конкретных посредников...
+
+3.2.4
+iLinearEntity -> LinearEntity (общий интерфейс для полилинии и контура)
