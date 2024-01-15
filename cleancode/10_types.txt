@@ -1,0 +1,155 @@
+1. 
+замена строковой константы на функцию
+
+ARROW_STYLE_FILENAME = os.path.dirname(os.path.abspath(__file__)) + "\\arrow.lcs"
+
+используем функцию
+def arrow_style_filename ():
+	os.path.dirname(os.path.abspath(__file__)) + "\\arrow.lcs"
+
+2. 
+замена строковой константы на функцию
+DEFAULT_CONFIG_FILENAME = os.path.dirname(os.path.abspath(__file__)) + "\\config\config.json"
+
+используем функцию
+def default_config_filename():
+	return os.path.dirname(os.path.abspath(__file__)) + "\\config\config.json"
+
+3.
+убираем сравнение вещественного числа с нулем
+def normalize(v: tuple) -> tuple:
+    len_v = length(v)
+    if len_v == 0:
+        return 0, 0
+    return scale(v, 1 / len_v)
+	
+if len_v == 0: - заменить на 
+if len_v < EPSILON:
+
+4.
+нет проверки перед возможным делением на ноль, исправляем
+def angle(v1: tuple, v2: tuple) -> float:
+    return acos((v1[X] * v2[X] + v1[Y] * v2[Y]) / (length(v1) * length(v2)))
+	
+нужно добавить проверку 
+	len_v1 = length(v1)
+	len_v2 = length(v2)
+	if len_v1 < EPSILON or len_v2<EPSILON: 
+		return 0
+	...
+	
+5
+разбиение сложного условия
+
+# проверка принадлежности точки отрезку
+# p, v, s, l -- стандартные сокращения в этом файле для точки, вектора, отрезка и прямой.
+
+def p_in_s(point: tuple, segment: Segment):
+    begin = semgnet.p
+    end = add_pv(s.p, s.v)
+    # тут сравнения вещ. чисел мне видятся допустимыми
+    x_min, x_max = (begin[X], end[X]) if begin[X] < end[X] else (end[X], begin[X])
+    y_min, y_max = (begin[Y], end[Y]) if begin[Y] < end[Y] else (end[Y], begin[Y])
+	
+	return p_in_l(p, s) and (x_min <= p[X]) and (p[X] <= x_max) and (y_min - p[Y] <= EPSILON) and (p[Y] - y_max <= EPSILON))
+
+# основной косяк - возвращаемое сложное условие
+# но имена переменных тоже можно чуть поправить
+
+def p_in_s(p: tuple, s: Segment):
+
+    s_begin = s.p
+    s_end = add_pv(s.p, s.v)
+    # тут сравнения вещ. чисел мне видятся допустимыми
+    x_min, x_max = (begin[X], end[X]) if begin[X] < end[X] else (end[X], begin[X])
+    y_min, y_max = (begin[Y], end[Y]) if begin[Y] < end[Y] else (end[Y], begin[Y])
+	
+	# булевы переменные
+	point_in_line = p_in_l(p, s)
+	x_in_interval = (x_min <= p[X]) and (p[X] <= x_max)
+	y_in_interval = (y_min <= p[Y]) and (p[Y] <= y_max)
+	return  point_in_line and x_in_interval and y_in_interval
+	
+# имхо стало читабельнее и проще для отладки
+	
+6.
+# пересечение прямой и окружности 
+# тут не учтен случай когда прямая вырождена
+def intersect_lc(line: Line, circle: Circle):
+    vx, vy = line.v[X], line.v[Y]
+    dx, dy = line.p[X] - circle.center[X], line.p[Y] - circle.center[Y]
+    A = vx ** 2 + vy ** 2
+    B2 = vx * dx + vy * dy
+    C = dx ** 2 + dy ** 2 - circle.R ** 2
+    D = B2 ** 2 - A * C
+    ans = None
+    if D == 0:
+        t = -B2 / A
+        ans = mov_t(line, t)
+    elif D > 0:
+        t1 = (-B2 - D ** 0.5) / A
+        t2 = (-B2 + D ** 0.5) / A
+        ans = [mov_t(line, t1), mov_t(line, t2)]
+    return ans
+
+# после строки 
+	A = vx**2 + vy**2
+# добавляем строчку
+	if A == 0:
+		return None
+
+7. 
+# расстояние от точки до прямой
+def distance_line_p(line, point):  
+    line_vec = vec(line[0], line[1])
+    if line_vec[Y] == 0:
+        x = point[0]
+        y = line[0][1]
+
+снова сравнение с нулем:
+if line_vec[Y] == 0: -> if abs(line_vec[Y]) <= EPSILON
+
+
+8. 
+def kb(line: Line):
+    vx, vy, px, py = line.v[X], line.v[Y], line.p[X], line.p[Y]
+    return vy / vx, (vx * py - px * vy) / vx
+	
+исправляем деление на ноль
+if abs(vx) <= EPSILON:	
+	return None, None
+	
+9. def mov_p_along_s(distance: float, s: Segment):
+	return mov_t(s, distance / length(s.v)
+
+убираем деление 
+if length(s.v) > EPSILON:
+	return mov_t(s, distance / length(s.v)
+return None
+
+10. константа вместо магического значения
+DEFAULT_MODEL_FILENAME = "osn_full.stl"
+
+11. снова аварийное деление на ноль
+oy_rotation = math.asin(abs(third_vector[0]) /
+                                ((third_vector[0] ** 2 + third_vector[1] ** 2 + third_vector[2] ** 2) ** 0.5))
+исправляем
+if length(third_vector) < EPSILON:
+	return None
+oy_rotation = math.asin(abs(third_vector[0]) / length(third_vector))
+
+12. сложное условие
+# метод у менеджера слоев
+
+def remove_layer(self, name):
+	if self.has_red_v(name) and not self.get_adj_list_red(name) and name != "default":
+	self.rem_red_v(name)
+    if self.active == name:
+		self.set_active("default")
+		
+# разбиваем
+is_layer_exist = self.has_red_v(name)
+is_layer_empty = not self.get_adj_list_red(name)
+is_not_default_layer = (name != default)
+if is_layer_empty and is_layer_exist and is_not_default_layer:
+	self.rem_red_v
