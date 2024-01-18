@@ -9,39 +9,35 @@ down = self[edge[1]]
 # еще 5 строк кода
 # ...
 if down[1] > up[1]:
-	up, down = down, up
+    up, down = down, up
 if xy[1] > up[1] or xy[1] < down[1] or (up[0] >= xy[0] and down[0] >= xy[0]):
-	return point_of_cross  # точки пересечения точно нет
+    return point_of_cross  # точки пересечения точно нет
             else:
-				#...
-				
+		#...
+
 # переменную xy можно пододвинуть ближе
 #... 
-
 xy = self[point_index]
 if xy[Y] > up[Y] or xy[Y] < down[Y] or (up[X] >= xy[X] and down[X] >= xy[X]):
-	return point_of_cross  # точки пересечения точно нет
-            else:
-				#...
+	return point_of_cross 
+else:
+	#...
 				
 2.
-# имена переменных поправлю потом
 # connectivity_comp инициализируется дважды, незачем
-
-def rays_crossing(face_id_list):  # face_id_list - внешние контура
-	answer = {}  # словарь: ключ - id внешнего фэйса, значение - ближайшая левая точка
-    connectivity_comp = dict()  # - заполнить самими левыми точками фэйсов из face_id_list
+def rays_crossing(face_id_list):  
+	answer = {}  
+    connectivity_comp = dict()  
     n_inf = float('-inf')
     connectivity_comp[face_id_list[0]] = -1
-    for i in range(1, len(face_id_list)):  # итерация по y лучам, 0-ой не исследуем, он равен бесконечности
+    for i in range(1, len(face_id_list)):  
 		answer[face_id_list[i]] = (n_inf, n_inf)
  
- # немного подправим инициализацию
+# немного подправим инициализацию
 connectivity_comp={face_id_list[0]: -1}
 
 3.
 # is_traversed далеко от тела цикла
-
 is_traversed = False
 first_half_edge = ed_list.pop() 
 # ...
