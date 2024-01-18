@@ -1,0 +1,280 @@
+# за имена переменных в этом задании прошу не бить больно
+# наследие уволившегося коллеги...
+
+1. 
+xy = self[point_no]
+up = self[edge[0]]
+down = self[edge[1]]
+# ...
+# еще 5 строк кода
+# ...
+if down[1] > up[1]:
+	up, down = down, up
+if xy[1] > up[1] or xy[1] < down[1] or (up[0] >= xy[0] and down[0] >= xy[0]):
+	return point_of_cross  # точки пересечения точно нет
+            else:
+				#...
+				
+# переменную xy можно пододвинуть ближе
+#... 
+
+xy = self[point_index]
+if xy[Y] > up[Y] or xy[Y] < down[Y] or (up[X] >= xy[X] and down[X] >= xy[X]):
+	return point_of_cross  # точки пересечения точно нет
+            else:
+				#...
+				
+2.
+# имена переменных поправлю потом
+# connectivity_comp инициализируется дважды, незачем
+
+def rays_crossing(face_id_list):  # face_id_list - внешние контура
+	answer = {}  # словарь: ключ - id внешнего фэйса, значение - ближайшая левая точка
+    connectivity_comp = dict()  # - заполнить самими левыми точками фэйсов из face_id_list
+    n_inf = float('-inf')
+    connectivity_comp[face_id_list[0]] = -1
+    for i in range(1, len(face_id_list)):  # итерация по y лучам, 0-ой не исследуем, он равен бесконечности
+		answer[face_id_list[i]] = (n_inf, n_inf)
+ 
+ # немного подправим инициализацию
+connectivity_comp={face_id_list[0]: -1}
+
+3.
+# is_traversed далеко от тела цикла
+
+is_traversed = False
+first_half_edge = ed_list.pop() 
+# ...
+# 10 строк кода
+# ...
+while not is_traversed:  # пока не сделаем полный обход
+	if next_arc != first_arc:
+		# ...
+		# 10 строк кода
+		# ...
+        if (leftest_point[0] - next_point[0] > epsilon):
+			min_x_arc = next_arc
+        else:
+			is_traversed = True
+            # ...        
+			
+# инициализируем сразу перед циклом
+#...
+is_traversed = False
+while not is_traversed:
+	#...
+	
+4. 
+снова объявление сильно заранее
+ right_down_point, right_down_ed = cut_edge_on_epsilon(ed_coord, True)
+ right_up_point, right_up_ed = cut_edge_on_epsilon(next_ed_coord, False)
+ right_center_point = ed_coord[1]  # всегда вершина
+
+#...
+# 20 строк
+#...
+
+sorted_right = sortedcontainers.SortedKeyList(key=lambda point: point[1])
+sorted_right.add(right_down_point)
+sorted_right.add(right_center_point)
+sorted_right.add(right_up_point)
+
+# исправляем
+
+#...
+# 20 строк
+#...
+
+right_down_point, right_down_edge = cut_edge_on_epsilon(ed_coord, True)
+right_up_point, right_up_edge = cut_edge_on_epsilon(next_ed_coord, False)
+right_center_point = ed_coord[1]
+sorted_right = sortedcontainers.SortedKeyList(key=lambda point: point[1])
+sorted_right.add(right_down_point)
+sorted_right.add(right_center_point)
+sorted_right.add(right_up_point)
+
+5.
+# снова та же история с another_tg - вне if она не нужна
+
+another_tg = (another_edge.beg_y - another_edge.end_y) / (
+                another_edge.beg_x - another_edge.end_x + eps)
+if len(tg_list):
+	add_edge_flag = False
+    edge_remove_list = []
+	
+    for i in range(len(tg_list)):
+		if abs(tg_list[i] - another_tg) < delta:
+			# ...
+			
+# исправляем 
+if len(tg_list):
+	add_edge_flag = False
+    edge_remove_list = []
+	
+	another_tg = (another_edge.beg_y - another_edge.end_y) / (
+                another_edge.beg_x - another_edge.end_x + eps)
+    for i in range(len(tg_list)):
+		if abs(tg_list[i] - another_tg) < delta:
+			# ...
+			
+6. status появился даже раньше чем использующая его вспомогательная функция!
+# мммда
+def bentley(...):
+	status = StatusList()
+    # ...
+	# 7 строк
+	# ...
+    
+	def get_new_point(ind1, ind2, param_t):
+        new_x, new_y = status[ind1].get_point_by_parameter(param_t)
+        # ...
+
+# переменную статуса завели перед функцией зачем-то
+# вспомогательную функцию вверх, добавляем еще один аргумент status
+# и саму функцию наружу
+
+def bentley(...):	
+# вся дальнейшая работа уже после
+	def get_new_point(ind1, ind2, param_t, status):
+		# ...
+		
+	status = StatusList()
+	
+7. current_point возникла раньше чем нужно
+LRI_sorted_list = SortedList(LRI_list)
+# ...
+# 7 строк
+# ...
+current_point = LRI_sorted_list[2]
+	
+# меняем 
+# ...
+# 7 строк
+# ...
+LRI_sorted_list = SortedList(LRI_list)
+current_point = LRI_sorted_list[2]
+
+8. Присваивание недопустимого значения после использования переменной multi_point
+
+# ... много кода 
+multi_point = new_current_point
+while LRI_sorted_list and LRI_sorted_list[0] == new_current_point:  # осуществляем приблизительное сравнение
+	current_point = LRI_sorted_list.pop(0)
+    multi_point.adding(current_point)
+    current_point = multi_point
+
+# Добавленное
+multi_point = None
+# ... много кода
+
+9. Присваивание недопустимого значения после использования переменной end_of_edges
+
+if current_point.r_p:
+	ends_of_edges = []
+    # ... 
+	# много кода
+	# ...
+
+    list(map(lambda x: status.delete_edge(x), ends_of_edges))  # исключить отрезки из статуса
+    list(map(lambda x: answer.append(x), ends_of_edges))
+
+	# добавленное
+	ends_of_edges = None
+
+10. Присваивание недопустимого значения после использования переменной guess
+guess = LRI_sorted_list[mid]
+if guess == new_p:
+	# 50 строк с использованиек guess
+
+# добавленное
+guess = None
+# еще 50 строк без guess
+
+11. Присваивание недопустимого значения после использования переменной forward
+forward = 1
+while (mid + forward) < len(LRI_sorted_list) and LRI_sorted_list[mid + forward] == new_p:
+	checked_ind = point_check(mid + forward, LRI_sorted_list, i_p_del, r_p_dell_p_del)
+	if checked_ind > -1:
+		indexes_of_deleted_elements.append(checked_ind)
+        forward += 1
+    revers = 1
+
+# добавленное
+forward = None
+# еще много строк без forward
+
+12. Присваивание недопустимого значения после использования переменной  t 
+intersection, t = status[index - 1].is_cross(status[index + 1])
+if intersection == Intersect.SKEW_CROSS and 0 < t < 1 + eps:
+	new_point_x, new_point_y = status[index - 1].get_point_by_parameter(t)
+
+# переменная t больше не нужна
+t = None
+# еще много строк без t
+
+13 Присваивание недопустимого значения после использования переменной  i_p_to_delete
+def point_check(point_ind, s_l_of_edges, i_p_del, r_p_del, l_p_del):
+    # проверка точки на совпадение с той, которую хотим удалить, проверяем не координату, а содержимое
+    i_p_to_delete = []
+    r_p_to_delete = []
+    l_p_to_delete = [][]
+
+    while i_p_del:
+        test_edges = s_l_of_edges[point_ind].i_p
+        if test_edges:
+            for ed in test_edges:
+                # если концы отрезков совпадают
+                if ed.end == i_p_del[0].end:
+                    flag += 1
+                    i_p_to_delete.append(ed)
+                    break
+            # pop тут, тк мб вариант (i_p_del и test_edges) != 0 и не имеют пересечений
+            i_p_del.pop(0)
+        else:
+            break
+	
+	# добавленное
+	i_p_to_delete = None
+	# еще много строк без i_p_to_delete
+
+14. Присваивание недопустимого значения после использования переменной  left_part и right_part
+left_part = []
+right_part = []
+for i in current_point.i_p:
+	right_part.append(Edge([current_point.p, i.end], i.info))
+	if i.beg != current_point.p:
+        left_part.append(Edge([i.beg, current_point.p], i.info))
+	if left_part:
+		list(map(lambda x: answer.append(x), left_part))  
+
+index_list = list(map(lambda x: status.index(x), right_part))
+# добавленное
+left_part = None, right_part = None
+
+15. Убираем неиспользуемую переменную otheredge + делаем недопустимые значения leftdot и rightdot
+
+leftdot = abs(self.edge_left.v.normalized().dot(edge.edge.v.normalized()))
+rightdot = abs(self.edge_right.v.normalized().dot(edge.edge.v.normalized()))
+selfedge = self.edge_left if leftdot < rightdot else self.edge_right
+otheredge = self.edge_left if leftdot > rightdot else self.edge_right
+i = Line2(selfedge).intersect(Line2(edge.edge))
+if i is not None and not _approximately_equals(i, self.point):
+	# locate candidate b
+    linvec = (self.point - i).normalized()
+    edvec = edge.edge.v.normalized()
+    if linvec.dot(edvec) < 0:
+		edvec = -edvec
+		bisecvec = edvec + linvec
+        if abs(bisecvec) == 0:
+			continue
+        bisector = Line2(i, bisecvec)
+        b = bisector.intersect(self.bisector)
+
+leftdot = abs(self.edge_left.v.normalized().dot(edge.edge.v.normalized()))
+rightdot = abs(self.edge_right.v.normalized().dot(edge.edge.v.normalized()))
+selfedge = self.edge_left if leftdot < rightdot else self.edge_right
+i = Line2(selfedge).intersect(Line2(edge.edge))
+# ...
+leftdot = None
+rightdot = None
+
