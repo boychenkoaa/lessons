@@ -1,0 +1,425 @@
+Часть 1. Горизонтальная змейка
+Приведу полностью алгоритм заполнения полигона змейкой по горизонтали
+шаги алгоритма
+1. найти минимальный y
+2. сдвинуть контур в ноль
+3. подвинуть вершины контура так, чтобы не было вершин, лежащих точно на горизонтальной линии
+4. в цикле по отрезкам контура сформировать массив, в котором по индексу горизонтального отрезка будут храниться абсциссы точек пересечения отрезка и горизонтальных линий
+5. построить змейку по массиву из предыдущего пункта
+
+версия до правок (с комментариями)
+
+def snake_horizontal(contour: list[tuple[float]], step: float)
+	# п1
+	y_min = contour[0][Y]
+	for pt in contour:
+		y_min = min(y_min, pt[Y])
+    
+	# п2
+	shifted_contour = [0]*len(contour)
+	for i in range(len(contour)):
+		shifted_contour[i] = contour[i][X], contour[i][Y] - y_min
+	
+    # п3
+	tuned_shifted_contour = []
+    for pt in shifted_contour:
+        tuned_pt = pt
+        index_float = pt[Y] / step
+        if abs(index_float - int(index_float)) <= 0.01:
+            tuned_pt = (pt[X], pt[Y] + 100 * EPSILON)
+        
+        tuned_shifted_contour.append(tuned_pt)    
+    
+	# п4
+    y_max = new_contour[0][Y]
+    for pt in new_contour:
+        y_max = max(y_max, pt[Y])
+
+        
+    N_lines = int (y_max / step)
+    snake_x = [None] * (N_lines+1)
+    
+    N = len(new_contour)
+    segments = [(new_contour[i-1], new_contour[i]) for i in range(N)]
+    for segment in segments:
+        ss = segment
+        if ss[0][Y] > ss[1][Y]:
+            ss = (ss[1], ss[0])
+
+        i0 = int(ss[0][Y] / step) + 1
+        i1 = int(ss[1][Y] / step)
+        
+        for i in range(i0, i1+1):
+            y = i * step
+            x = intersect_sy(ss, y)
+            if snake_x[i] == None:
+                snake_x[i] = [x]
+            else:
+                snake_x[i].append(x)
+	
+	# п5
+    snake0 = []
+    for i in range(1, N_lines+1):
+        y = i * step
+        x_list = snake_x[i]
+        x1 = min(x_list)
+        x2 = max(x_list)
+        if i % 2 == 0:
+            x1, x2 = x2, x1
+        snake0.append((x1, y))
+        snake0.append((x2, y))
+    
+    return shift_contour(snake0, (0, y_min))
+	
+-> Правка 1.
+первые 4 строчки сдвигают полигон в ноль по оси Y
+выносим в отдельную функцию получение границ контура
+# aabb - axis aligned bouding box
+def contour_aabb(contour: list[tuple[float]])
+	if not contour:
+		return None
+	x_min, y_min = contour[0]
+	x_max, y_max = contour[0]
+	for point in contour:
+		x_min = min(point[X], x_min)
+		x_max = max(point[X], x_max)
+		y_min = min(point[Y], y_min)
+		y_max = max(point[Y], y_max)
+		
+	return ((x_min, y_min), (x_max, y_max))
+	
+-> Правка 2.	
+функцию сдвига контура также пропишем отдельно
+add_pv -- уже имеется
+
+def shift_contour(contour: list[tuple[float]], vec:tuple[float]):
+	return [add_pv(point, vec) for point in contour]
+
+-> Правка 3.
+Отдельно пропишем функцию свдига контура в ноль по Y
+def shift_contour_to_y_zero(contour: list[tuple[float]]):
+	return shift_contour(contour, aabb(contour)[0][Y])
+
+-> Правка 4.
+мелкие подвижки точек контура выносим в отдельную процедуру
+
+
+def tune_contour(contour: list[tuple[float]], step:float, y_delta: float, y_shift:float):
+	ans = []
+    for i in range(len(contour)):
+        tuned_point = contour[i]
+		if abs(pt[Y] - i * step) <= y_delta:
+			tuned_point = add_pv(tuned_point, (0, y_shift))
+        
+        ans.append(tuned_point)
+	return ans
+
+-> Правка 5.
+основу шага 4 в отдельную функцию
+Контур в массив абсцисс его пересечения с горизонтальными прямыми
+индекс = индексу горизонтальной прямой
+ 	
+def contour_to_x_list(contour: list[tuple[float]], step:float):
+	ans = []
+    aabb = contour_aabb(contour)
+	y_min, y_max = aabb[0][Y], aabb[1][Y]
+	N_lines = int((y_max - y_min) / step) + 1
+	
+	for i in range(N_lines):
+		ans.append([])
+	
+	for segment_index in range(len(contour)):
+		segment = contour[segment_index-1], contour[segment_index]
+		y_down, y_up = min(segment[BEG][Y]), max(segment[END][Y])
+		index_down, index_up= int(y_down / step) + 1, int(y_up / step)
+		for line_index in range(index_down, index_up+1):
+            x = intersect_sy(segment, line_index * step)
+            ans[j].append(x)
+	
+	return ans
+
+-> Правка 6.
+лепим змейку из массива массивов абсцисс
+по хорошему бы провалидировать -- длина каждого подмассива должна быть равна двум
+
+def x_list_to_snake(x_list:list[list[float]], step):
+	ans = []
+	for i in range(len(x_list)):
+		if len(x_list[i] != 2):
+			return None
+			
+		x1, x2 = x_list[i]
+        if i % 2 == 0 and x1 > x2 or i % 2 == 1 and x1 < x2:
+			x1, x2 = x2, x1
+			
+		y = i * step
+		ans.append((x1, y))
+		ans.append((x2, y))
+	return ans
+	
+-> Правка 7
+Сводим все воедино
+EPSILON_TUNE_COEF = 10
+
+def snake_horizontal(contour: list[tuple[float]], step: float):
+	shifted_contour = shift_contour_to_y_zero(contour)
+	tuned_contour = tune_contour(contour, step, EPSILON, EPSILON_TUNE_COEF * EPSILON)
+	x_intersect_list = contour_to_x_list(tuned_contour, step)
+	ans = x_list_to_snake(x_intersect_list, step)
+	return ans
+
+# профит	
+	
+================================
+Часть 2
+Загоняем глобальные переменные в поле класса
+
+Было
+default_eps = EPSILON
+
+class CollisionDetector:
+	def __init__(self):
+		pass
+
+	def __contains__(self, point):
+        pass
+
+    def insert(self, id_entity):
+        pass
+
+    def remove(self, point):
+        pass
+
+
+class ListCollisionDetector(CollisionDetector):
+    def __init__(self):  
+        self.__point_tree = SortedKeyList(key=self.key_func)
+	
+	def __raw_index(self, point: tuple):
+		...
+        if ...:
+            if distance_pp(self.__point_tree[ans].value, point) < EPSILON:
+				...
+
+class TreeCollisionDetector(CollisionDetector):
+    def __init__(self, id_entity_list=None):
+        self.__point_tree = kdtree.create(dimensions=3, id_entity_list=id_entity_list)
+        self.__size = 0				
+	
+	def __scale_point (point: tuple):
+        return tuple([co / EPSILON for co in point])
+	
+отвяжем немного классы от глобального эпсилон
+
+->  Правка 8
+в интерфейс добавим эпсилон как поле класса -- один черт ни один детектор коллизий без него не обойдется
+class CollisionDetector:
+	def __init__(epsilon):
+		self.__epsilon = epsilon
+
+вносим каскадные изменения в наследников
+->  Правка 9
+
+class ListCollisionDetector(CollisionDetector):
+    def __init__(self, epsilon=EPSILON): 
+		super.__init__(epsilon)
+        self.__point_tree = SortedKeyList(key=self.key_func)
+		
+-> правка 10
+class ListCollisionDetector(CollisionDetector):
+    def __init__(self, epsilon=EPSILON): 
+		self.__point_tree = kdtree.create(dimensions=3, id_entity_list=id_entity_list)
+        self.__size = 0	
+	
+	def __scale_point (point: tuple):
+        return tuple([co / self.__epsilon for co in point])
+		
+=== Часть 3
+аналогично части 1
+класс системы координат
+задание СК по трем точкам - началу, точек на Ox, точке на Oy
+очень много дурных однотипных вычислений, которые мы вынесем
+
+было (после небольшого моего рефакторинга)
+
+class CoordinateSystem:
+	...
+
+	def __tranform_matrix_from_3points(self, origin: tuple[float, float, float] = (0., 0., 0.),
+                             ox_point: tuple[float, float, float] = (1., 0., 0.),
+                             oy_point: tuple[float, float, float] = (0., 1., 0.)) -> None:
+        identity_matrix = np.array([[1., 0., 0., 0.],
+                                    [0., 1., 0., 0.],
+                                    [0., 0., 1., 0.],
+                                    [0., 0., 0., 1.]])
+
+        # вычисление векторов Ox, Oy, Oz
+        ox_vector = sub_pv(ox_point, origin)
+        oy_vector = sub_pv(oy_point, origin)
+        oz_vector = tuple(np.cross((origin, first_vector), (origin, second_vector))[1])
+
+       # вычисление поворота по оси Ox
+        ox_angle = math.radians(90.) - math.asin(abs(oy_vector[Y]) / length_v(oy_vector))
+        if angle(oy_vector, (0, -1, 0)) < pi / 2:
+            ox_angle = math.radians(180) - ox_rotation
+        if angle(oy_vector, (0, 0, -1)) < pi / 2:
+            ox_angle = - ox_angle
+        if angle(oz_vector, (0., 0., -1)) < pi / 2:
+            ox_angle = pi - math.asin(abs(oz_vector[X]) / length_v(oz_vector))
+
+        # вычисление матрицы поворота на отрицательный угол поворота по Ox
+        inv_rx_matrix = np.array(deepcopy(identity_matrix))
+        inv_rx_matrix[1][1], inv_rx_matrix[1][2], inv_rx_matrix[2][1], inv_rx_matrix[2][2] = \
+            cos(-ox_rotation), -sin(-ox_rotation), sin(-ox_rotation), cos(-ox_rotation)
+
+        # поворот оставшихся векторов на отрицательный угол поворота по Ox
+        oz_vector = self.__transform(inv_rx_matrix, oz_vector)
+        ox_vector = self.__transform(inv_rx_matrix, ox_vector)
+
+        # вычисление поворота по оси Oy
+        oy_angle = math.asin(abs(oz_vector[X]) / length_v(oz_vector))
+        if self.__vector_angle(oz_vector, (0, 0, -1)) < pi/2):
+            oy_angle = pi - oy_angle
+        if self.__vector_angle(oz_vector, (-1, 0, 0)) < pi/2:
+            oy_angle = -oy_angle
+
+        # вычисление матрицы поворота на отрицательный угол поворота по Oy
+        inv_ry_matrix = np.array(deepcopy(identity_matrix))
+        inv_ry_matrix[0][0], inv_ry_matrix[0][2], inv_ry_matrix[2][0], inv_ry_matrix[2][2] = \
+            cos(-oy_angle), sin(-oy_angle), -sin(-oy_angle), cos(-oy_angle)
+
+        # поворот оставшегося вектора на отрицательный угол поворота по Oy
+        # необходимо для избежания повторных подсчетов угла поворота
+        ox_angle = self.__transform(inv_ry_matrix, first_vector)
+
+        # вычисление поворота по оси Oz
+        oz_rotation = math.asin(abs(ox_vector[1]) / length_v(ox_vector)
+        if v_angle(ox_vector, (-1, 0, 0)) < math.radians(90):
+            oz_rotation = pi - oz_rotation
+        if v_angle(ox_vector, (0, -1, 0)) < math.radians(90):
+            oz_rotation = -oz_rotation
+        
+        # вычисление матрицы поворота по оси Ох
+        rx_matrix = np.array(deepcopy(identity_matrix))
+        rx_matrix[1][1], rx_matrix[1][2], rx_matrix[2][1], rx_matrix[2][2] = \
+            cos(ox_rotation), -sin(ox_rotation), sin(ox_rotation), cos(ox_rotation)
+
+        # вычисление матрицы поворота по оси Оy
+        ry_matrix = np.array(deepcopy(identity_matrix))
+        ry_matrix[0][0], ry_matrix[0][2], ry_matrix[2][0], ry_matrix[2][2] = \
+            cos(oy_rotation), sin(oy_rotation), -sin(oy_rotation), cos(oy_rotation)
+
+        # вычисление матрицы поворота по оси Оz
+        rz_matrix = np.array(deepcopy(identity_matrix))
+        rz_matrix[0][0], rz_matrix[0][1], rz_matrix[1][0], rz_matrix[1][1] = \
+            cos(oz_rotation), -sin(oz_rotation), sin(oz_rotation), cos(oz_rotation)
+
+        r_matrix = np.dot(identity_matrix, rx_matrix)
+        r_matrix = np.dot(r_matrix, ry_matrix)
+        r_matrix = np.dot(r_matrix, rz_matrix)
+        self._transform_matrix = np.dot(identity_matrix, r_matrix)
+		
+		#self.rotate_cs(math.degrees(ox_rotation), math.degrees(oy_rotation), math.degrees(oz_rotation))
+        #self.move_cs(origin)
+
+-> Правка 11. 
+Единичную матрицу -- в глобальные константы, это точно не локальная переменная и меняться она не может
+ID4_MATRIX = np.array  ([[1., 0., 0., 0.],
+						[0., 1., 0., 0.],
+                        [0., 0., 1., 0.],
+                        [0., 0., 0., 1.]])
+
+-> Правка 12
+Отдельно выпишем функцию вычисления матрицы поворота вокруг ox
+
+def ox_rot_matix(angle_rad: float):
+	return np.array([
+	[1., 0., 0.],
+	[0., cos(angle_rad), -sin(angle_rad)],
+	[0., sin(angle_rad), cos(angle_rad)]])
+	
+-> Правка 13
+Отдельно выпишем функцию вычисления матрицы поворота вокруг oy
+
+def oy_rot_matix(angle_rad: float):
+	return np.array([
+	[cos(angle_rad), 0., -sin(angle_rad)],
+	[0., 1., 0.],
+	[sin(angle_rad), 0., cos(angle_rad)]])
+		
+
+-> Правка 14
+Отдельно выпишем функцию вычисления матрицы поворота вокруг oz
+
+def oz_rot_matix(angle_rad: float):
+	return np.array([
+	[cos(angle_rad), -sin(angle_rad), 0.],
+	[sin(angle_rad), cos(angle_rad), 0.],
+	[0., 0., 1.]]
+)
+
+-> Правка 15 
+Отдельно выпишем матрицу повотора на углы вокруг xyz
+def xyz_rot_matrix(angles:tuple[float]):
+	ans = np.dot(ox_rot_matix(angles[X]), oy_rot_matix(angles[Y])) *
+	ans = np.dot(ans, oz_rot_matix(angles[Z]))
+	return ans
+
+def xyz_rot_matrix4(angles:tuple[float]):
+	ans = np.dot(ID4_MATRIX, xyz_rot_matrix(angles))
+	return ans	
+	
+	
+-> Правка 16
+вычисление углов поворота тоже выносим в процедуры
+def ox_angle_from_vectors(ox_vector, oy_vector, oz_vector):
+	ans = math.radians(90.) - math.asin(abs(oy_vector[Y]) / length_v(oy_vector))
+    if angle(oy_vector, (0, -1, 0)) < pi / 2:
+        ans = math.radians(180) - ox_rotation
+    if angle(oy_vector, (0, 0, -1)) < pi / 2:
+        ans = - ox_angle
+    if angle(oz_vector, (0., 0., -1)) < pi / 2:
+		ans = pi - math.asin(abs(oz_vector[X]) / length_v(oz_vector))
+
+def oy_angle_from_vectors(ox_vector, oy_vector, oz_vector):
+	...
+	
+def oz_angle_from_vectors(ox_vector, oy_vector, oz_vector):
+	...
+	
+
+-> Правка 17
+Сводим все воедино
+def __tranform_matrix_from_3points(self, origin: tuple[float, float, float] = (0., 0., 0.),
+                             ox_point: tuple[float, float, float] = (1., 0., 0.),
+                             oy_point: tuple[float, float, float] = (0., 1., 0.)) -> None:
+	# вычисление векторов Ox, Oy, Oz
+    ox_vector = sub_pv(ox_point, origin)
+    oy_vector = sub_pv(oy_point, origin)
+    oz_vector = tuple(np.cross(ox_vector, oy_vector))
+
+    # вычисление поворота по оси Ox
+    ox_angle = ox_angle_from_vectors(ox_vector, oy_vector, oz_vector)
+
+    # вычисление матрицы поворота на отрицательный угол поворота по Ox
+    inv_rx_matrix = ox_rot_matix(-ox_angle)
+
+    # поворот оставшихся векторов на отрицательный угол поворота по Ox
+    oz_vector = self.__transform(inv_rx_matrix, oz_vector)
+    ox_vector = self.__transform(inv_rx_matrix, ox_vector)
+
+    # вычисление поворота по оси Oy
+	oy_angle = oy_angle_from_vectors(ox_vectorm oy_vector, oz_vector)
+	
+	# вычисление матрицы поворота на отрицательный угол поворота по Oy
+    inv_ry_matrix = oy_rot_matix(-oy_angle)
+	
+	# поворот оставшегося вектора на отрицательный угол поворота по Oy
+    # необходимо для избежания повторных подсчетов угла поворота
+    ox_angle = self.__transform(inv_ry_matrix, ox_vector)
+	
+	# вычисление поворота по оси Oz
+    oz_angle = oy_angle = oz_angle_from_vectors(ox_vectorm oy_vector, oz_vector)
+        
+	# итоговая матрица
+    self._transform_matrix = xyz_rot_matrix4(ox_angle, oy_angle, oz_angle)
