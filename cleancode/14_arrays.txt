@@ -1,0 +1,45 @@
+
+1. 
+я специально поискал контрпример (который пожалуй только подтверждает правило)
+AddPoint - функция API, аргументы у нее именно такие -- индекс точки и две координаты
+можно, конечно читать подряд и прибавлять единицу к счетчику самостоятельно, но это, как мне кажется, так же криво, как и произвольный доступ
+ 
+for i in range(len(point_list)):
+    new_poly.AddPoint(i,point_list[i][0],point_list[i][1])
+    new_poly.Update()
+	
+2.
+тут точно нужно множество
+for segment in icontour.TmpObjects:
+	if not (isinstance(segment, KAPI7.IArc) or isinstance(segment, KAPI7.ILineSegment)):
+		return False
+		
+3.
+список тут излишен, но произвольного доступа нет
+def make_nc(self, job: Job) -> str:
+    blocks = self.build(job)
+    ans = ""
+    for block in blocks:
+        ans = ans + str(block) + "\n"
+		
+4.
+список тут излишен, но произвольного доступа нет
+for pline_frame in job.frames:
+    if not pline_frame:
+        raise ValueError("Empty pline")
+            
+    body_blocks.append_block(kwCommentBlock("path # " +str(pline_num)+ " start"))	
+
+5.
+опять же, список очень синтаксически удобен
+можно за одну строчку вылепить из него новый список :-)
+с очередью такого не сделать, а тут оно такое удобное
+
+segments = [(new_contour[i-1], new_contour[i]) for i in range(N)]
+# а вот тут уже не злоупотребляем
+for segment in segments:
+    ss = segment
+    if ss[0][Y] > ss[1][Y]:
+        ss = (ss[1], ss[0])
+        i0 = int(ss[0][Y] / step) + 1
+        i1 = int(ss[1][Y] / step)
