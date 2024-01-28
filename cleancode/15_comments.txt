@@ -1,0 +1,142 @@
+1. добавил комментари
+class SimpleCollisionDetector(CollisionDetector):
+    def __init__(self, epsilon=DEFAULT_EPSILON):  
+        self._sorted_point_list = SortedKeyList(key=self.key_function)
+        self._epsilon = epsilon
+	
+	# ключ для поиска в контейнере
+    def self.key_function(self, id_entity):
+        return self._approximate(id_entity.value)
+		
+2. добавил комментарий
+def convertGGtoContours(graph: GG):
+    g = deepcopy(graph)
+    clipped_graph = g.clip()
+	lines = []
+    
+	if not g.is_empty():
+        dcel = DCEL(g)
+        lines = dcel.get_all_contours(external_only=True)
+    
+	# компоненты связности
+    connectivity_components = clipped_graph.get_connectivity_components()
+    for component in connectivity_components:
+		gr_list, pline_list = component.partition()
+        for pline in pline_list:
+            lines.append(pline.points())
+    return lines
+
+3. добавил комментарий
+# конвертирует любую геометрию в наборы полилиний
+class toPlinesConverter:
+	...
+
+
+4. класс двудольного графа
+
+# red и blue - два семейства вершин двудольного графа
+class BiGraph(iGraph):
+    def __init__(self):
+        self._red_connections = dict()
+        self._blue_connections = dict()
+        self._red_vertices = set()
+        self._blue_vertices = set()
+
+5. я не столь хорошо знаю англ
+# висячие вершины
+def get_pendant_v(self):
+    ans = []
+    for vert in self.vertices:
+		...
+
+6, 7, 8 добавил еще комментарии. 
+иногда на сильно узкоспециализированный алгоритм проще дать ссылку на литературу
+
+class DCEL:
+	# брошюра по выч геому раздел 5.3.1 
+	def from_graph():
+		# поиск пересечения фейса и горизонтального луча, см 5.3.1 
+		def cross_ray(h_ed, c_face_id):
+			edge = h_ed.edge()
+			point_no = self.__face_list[c_face_id][1][1]
+			x_y = self[point_no]
+			up = self[edge[0]]
+			down = self[edge[1]]
+			if down[1] > up[1]:
+				up, down = down, up
+			if x_y[1] > up[1] or x_y[1] < down[1] or (up[0] >= x_y[0] and down[0] >= x_y[0]):
+				return None  # точки пересечения точно нет
+			
+			# точка пересечения точно есть
+			x_new = down[0] + ((x_y[1] - down[1]) * (up[0] - down[0])) / (up[1] - down[1])
+			if x_new >= x_y[0]:
+				return (x_new, x_y[1])
+			return None
+
+
+==============================
+1. контейнер с отсортированным массивом внутри
+class QuickIDContainer
+	# двоичный поиск элемента либо None, если элемента нет
+	def _raw_index(self, id_):
+        if len(self) == 0:
+            return None
+
+        ans = self._bkl(id_)
+        if 0 <= ans < len(self._skl):
+            if self._skl[ans].id == id_:
+                return ans
+        return None
+	
+	# можно убрать комментарий, изменив название на safe_binsearch
+	def _safe_binsearch(self, id_):
+        ...
+
+2. неудачное название метода
+    def rem(self, id_)
+		if not id_ in self:
+		    return None
+		
+        ind = self._raw_index(id_)
+        # пусть возвращает точку, хуже никому не будет от этого
+        return self._skl.pop(ind)
+	
+	исправляем, меняем название
+	def pop_by_id(self, id_)
+		if not id_ in self:
+		    return None
+		
+        ind = self._raw_index(id_)
+        return self._skl.pop(ind)																															
+ 
+3, 4.  
+имеется невнятное название метода и расшифровки
+
+def rays_crossing(face_id_list):  # face_id_list - внешние контура
+            answer = {}  # словарь: ключ - id внешнего фэйса, значение - ближайшая левая точка
+            connectivity_components = dict()  # - заполнить самими левыми точками фэйсов из face_id_list
+	
+исправляем
+def get_nearest_left_points(exterior_face_id_list: list[int]): 
+    ans = SimpleIDContainer() # в значениях -- точки
+    left_faces_idcontainer = SimpleIDContainer()  # хранит id ближайшей слева грани для каждой грани, -1 - грани слева нет
+
+		
+5. никаких пояснений тут нет
+внесем ясность 
+и название снова кривое
+
+class DCEL:
+	...
+	
+	def nesting_tree(self):
+		...
+
+
+
+class DCEL:
+	...
+	# список рёбер-представителей контуров
+	# иерархия в дереве соответствует иерархии геометрической
+		def get_represent_halfedges_tree(self):
+		...
