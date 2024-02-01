@@ -1,0 +1,140 @@
+1. (1 - информативный комментарий, 3 - прояснение)
+тут я решил специально сделать более короткое, но наглядное имя
+как у функции так и у аргумента
+
+# превратить ребро кривой в трехмерную полилинию
+# step -- расстояние между точками по прямой (не вдоль кривой)
+def linearize_edge(iedge, step=0.1):
+
+2. (2 - намерения)
+#  Подключим описание интерфейсов API7
+kompas_api7_module = gencache.EnsureModule("{69AC2981-37C0-4379-84FD-5DD2F3C0A520}", 0, 1, 0)
+application = kompas_api7_module.IApplication(Dispatch("Kompas.Application.7")._oleobj_.QueryInterface(kompas_api7_module.IApplication.CLSID, pythoncom.IID_IDispatch))
+KAPI7 = kompas_api7_module
+
+3. (6 -- TODO)
+document3d = KAPI7.IKompasDocument3D(application.ActiveDocument)
+# TODO добавить проверку типа активного документа и только потом конвертировать в 3д
+
+4. (1 -- информативный комментарий)
+когда постоянно имеешь дело с классами типа iSurfaceIntersectionCurve, при регулярном использовании хочется сократить их упоминания до ic
+появляется система сокращений: IC - кривая пересечения, SK - эксиз.
+однако, когда читаешь код после долгого перерыва или его с нуля читает кто-то еще -- такие аббревиатуры дублирую в начале файла и на всякий случай пишу комментарии перед функциями чтобы не разгадывать шарады
+
+
+# проецируем кривую пересечения в эскиз
+def ic_to_sk(ic, sketch, q = None):
+    isketch = to7(sketch)
+    sketch_def = sketch.GetDefinition()
+    segment3d_list = intersection_curve_to_segment_list(ic)
+
+5. (4 - предупреждение)
+if projection_method == USE_LINEARIZATION:
+	...
+elif projectioni_method == USE_KOMPAS_CURVE_PROJECTION:
+    # генерация двумерных кривых в эскизах проецированием кривых пересечения 
+	# работает медленно и может плохо сшиваться
+        for i in range(len(planes_offset)):
+            ...
+            sketch_def.AddProjectionOf( to5(curve_list[i]))
+
+6. (2 - представление намерений)
+файл postproc.py
+многострочный комментарий о работе постпроцессора в целом
+"""
+На основе геометрии формируются FramesCollection - коллекция фреймов (вручную или автоматически, не суть).
+Основные фреймы -- подъем, спуск, поджиг дуги, движение по полилинии. 
+Также могут быть вызовы любых собственных процедур робота -- очистка горелки, ожидание и пр.
+У фрейма может быть не указан (None) какой-либо параметр -- в таких случаях берется параметр по умолчанию.
+Собственные параметры фрейма важнее параметров по умолчанию из файла конфигурации.
+Проход по фреймам формирует коллекцию блоков (BlocksCollection).
+Блок, в отличие от фрейма, имеет однозначную текстовую интерпретацию и содержит в себе все данные для этого.
+Далее постпроцессор, проходя по блокам, формирует текстовую УП.
+В идеале постпроцессор не должен делать каких-либо дополнительных действий, только идти по блокам и добавлять строковые переменные.
+Однако, такая возможность оставлена "на всякий случай", ради гибкости.
+"""
+
+7. (5 - усиление)
+для безопасности оператора и робота крайне важно в каких единицах скорость
+об этом не зазорно лишний раз напомнить программисту
+
+# скорость выдается в миллиметрах в секунду !
+class kwLMOVEblock(pointBlock):
+    def __init__(self, pt_num: int, valid_pt: rPoint):
+        super().__init__(pt_num, valid_pt)
+
+    def __str__(self):
+        return "SPEED " +tostr(self.pt.v, 1) + " MM/S ALWAYS\nLMOVE p" + str(self.pt_num)
+
+8.  (2 - представление намерений)
+даю понять, что я не зря развел камарильню с кучей классов для блоков и фреймов -- механизм универсален
+
+# G коды нам для себя не нужны, но на клиентов экспорт в них действует магически...
+class GCodeCommentBlock(txtBlock):
+    def __init__(self, txt: str):
+        super().__init__(txt)
+   
+9.  (1 - информативный комментарий, 3 -- прояснение)
+# упрощает сегмент (прямой не трогает, кривой заменяет на дугу)
+# хоть и сегмент, а может быть и кривым, да
+# accuracy - количество знаков после запятой, чтобы округлялось и сшивалось потом без проблем
+# компас не сшивает контура если расхождение между концом одного и началом другого больше 0.001 мм
+
+def simplify_contoursegment(icontoursegment, accuracy = 2):
+    ans = []
+    if icontoursegment.SegmentType == 1:
+	
+10. (6 - TODO)
+# TODO найти все правильные названия всех констант в документации!
+
+def get_active_plane_offset():
+    if idoc3d == None or idoc3d.DocumentType != 4:
+        return None
+    
+    idoc3d1 = KAPI7.IKompasDocument3D1(idoc3d)
+    
+    eo = idoc3d1.EditObject
+    if eo==None or eo.FeatureType != 105:
+        return None
+    
+    mo = KAPI7.IModelObject(eo)
+    if mo.ModelObjectType != 5:
+        return None
+    
+    sk = KAPI7.ISketch(mo)
+    plane = sk.Plane
+    if plane.ModelObjectType != 14:
+        return None
+    
+    plane3d = KAPI7.IPlane3DByOffset(plane)
+    return plane3d.Offset
+	
+11.  (1 - информативный комментарий)
+
+# универсальный конвертер в строку для разнотипных данных
+# для печати блоков с разными данными  при использовании постпроцессора очень удобно...
+def tostr(variant, precision: int = 1, nonestr = ".", truestr="") -> str:
+    if isinstance(variant, float):
+        return ("{:." + str(precision) + "f}").format(variant)
+    elif isinstance(variant, bool):
+        if variant:
+            return special
+        else:
+            return ""    
+    elif isinstance(variant, int):
+        return ("{:" + str(precision) +"d}").format(variant)
+    elif isinstance(variant, str):
+        return variant
+    elif variant == None:
+        return nonestr
+   
+    raise TypeError("incorrect type for tostr")
+	
+12. (6 -- TODO)
+# добавить исключение если хоть на одном из этапов возникает None!
+def get_active_drawing_container(idoc2d):
+    view_manager = idoc2d.ViewsAndLayersManager
+    views = view_manager.Views
+    active_view = views.ActiveView
+    drawing_container = KAPI7.IDrawingContainer(active_view)
+    return drawing_container
