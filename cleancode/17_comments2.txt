@@ -1,0 +1,140 @@
+1. неинформативный комментарий
+
+# достаем все поверхности для пересечения
+ return [ to7(face) for face in faces5_list_by_ibody(ibody)]
+ 
+просто стираем его
+
+2. закоментированный код
+# face_collection = iPart.GetMainBody().FaceCollection()
+
+сносим
+
+3. и некорректный, и неполный
+# смещение плоскости XY
+def create_offsetXY_plane(...
+
+# новая плоскость параллельна XY и смещена по Z
+def create_offsetXY_plane(...
+
+4. сносим артефакты со времен отладки
+# print(document3d.DocumentType)
+manager = document3d.SelectionManager
+
+5. страйк -- комментарий к закомментированному коду, удаляем
+# для отладки
+# sketchs = iModelContainer.Sketchs
+
+6. надо найти константу в библиотеке
+
+# если прямой
+if curve_type == 1:
+
+if curve_type == const3d.ksLine3D:
+
+==
+поревьювим теперь немного джунов
+
+7. вранье в комментарии
+рисуем мы именно граф -- набор отрезков и еще точки отдельно
+
+# рисуем график
+def draw_graph(segments_list, cross_points):
+    
+исправляем
+
+# рисуем граф. 
+# отдельные точки (второй аргумент) прорисовываем не так как концы отрезков
+def draw_graph(segments_list, points_list):
+
+8. слишком большой комментарий и невыразительное имя
+def tg(self):
+	""" Returns the tangent of the angle between the edge and the positive x-axis direction. """
+    return (self.beg_y - self.end_y) / (self.beg_x - self.end_x + eps)
+
+# тангенс угла наклона прямой полуребра
+def angle_coef()
+
+9. малопонятный комментарий
+пересекающиеся а не скрещивающиеся
+можно просто удалить комментарий
+
+# скрещивающиеся или параллельные
+def is_intersect(self, other):  
+
+10 а вот тут уже совсем ложный
+кто пересекается -- отрезки, продолжения, или никто
+
+# пересекаются ли отрезки или их продолжения
+def is_cross(self, other):
+
+удаляем комментарий, меняем имя, указываем тип возвращаемого значения
+def intersection_type(self, other) -> INTERSECTION_TYPE:  
+
+11. Если нужна проверка, нужно явно сформулировать это в TODO
+
+if self.end_x <= other.end_x:   # возможно просто <
+
+исправляем
+
+# TODO -- проверить, строгое равенство или нет!
+if self.end_x <= other.end_x:
+
+12. снова не хватает TODO, 
+
+# сделать static метод
+def update_y(self, new_edge: Edge):
+
+да и зачем он статический...
+посмотрел, не надо с ним ничего делать
+сносим 
+
+13. не хватает двух TODO
+комментарий о намерениях в конце а не в начале
+комментарий про сортировку тоже нужен выше
+
+if abs(guess_y - new_y) < eps:
+		...
+    else:
+		high = mid
+        # сортируем отрезки по углу наклона, проверить внимательно на тестовых данных!
+        # возможно удалить эту часть
+        if guess.end_x <= new_edge.end_x:  # ищем минимальную x координату концов рёбер
+		
+# сортируем отрезки по углу наклона
+# TODO проверить внимательно на плохих данных, потенциально неустойчив
+if abs(guess_y - new_y) < eps:
+		...
+    else:
+		high = mid
+        
+		# ищем минимальную x координату концов рёбер
+        if guess.end_x <= new_edge.end_x:  
+			...
+
+14. снова страйк
+нет TODO
+кривое название
+комментарий вместо названия функции
+сама функция написана криво -- исключения не для этого
+
+# сделать if
+def match(edge_list, another_edge):  # добавляем ребро в список рёбер, если его там ещё нет
+    try:
+        edge_list.index(another_edge)
+    except ValueError:  # если пришло новое ребро
+        edge_list.add(another_edge)
+		
+# если не уникальное -- игнор
+def insert_unique_edge(edge_list, new_edge):
+	if new_edge not in edge_list:
+		edge_list.add(new_edge)
+		
+правда остался вопрос -- а зачем вообще такая "функция"
+
+15.  масло масляное, удаляем
+# найденные точки пересечения
+intersection_points = []
+
+16. bonus -- no comment
+LRI_sorted_list[0] == new_current_point:  # осуществляем приблизительное сравнение
