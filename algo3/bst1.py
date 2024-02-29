@@ -57,6 +57,9 @@ class BST:
         bst_find = self.FindNodeByKey(key)
         if bst_find.NodeHasKey:
             return False
+        if bst_find.Node == None:
+            self.Root = BSTNode(key, val, None)
+            return True
         
         parent_node = bst_find.Node
         new_node = BSTNode(key, val, parent_node)
