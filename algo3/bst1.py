@@ -136,7 +136,7 @@ class BST:
         
         ans = [0]
         self.NLR_walk(self.Root, walk_count, ans)
-        return ans
+        return ans[0]
     
     def __str__(self):
         
@@ -152,7 +152,3 @@ class BST:
     
     def __repr__(self):
         return str(self)
-        
-        
-            
-    
