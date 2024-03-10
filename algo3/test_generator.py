@@ -20,7 +20,11 @@ class test_abst(unittest.TestCase):
         self.assertEqual(generatebbstarray(['a', 'b', 'c', 'f', 'g', 'h', 'k', 'm', 'p', 'q', 'r', 's', 'x', 'y', 'z']), \
                          ['m', 'f' ,'s', 'b', 'h', 'q', 'y', 'a', 'c', 'g' ,'k', 'p', 'r', 'x', 'z'])
         self.assertEqual(generatebbstarray(['a',  'x', 'f', 'g', 'h', 'k', 'm', 'z', 'p', 'q', 'b', 'c', 'r', 's',  'y']), \
-                         ['m', 'f' ,'s', 'b', 'h', 'q', 'y', 'a', 'c', 'g' ,'k', 'p', 'r', 'x', 'z'])        
+                         ['m', 'f' ,'s', 'b', 'h', 'q', 'y', 'a', 'c', 'g' ,'k', 'p', 'r', 'x', 'z'])   
+    
+    def test_generate2(self):
+        bst = generatebbstarray([50,25,75,20,37, 62,84,19,21,31, 43,55,70,80,92])        
+        self.assertEqual(bst, [50,25,75,20,37, 62,84,19,21,31, 43,55,70,80,92])
         
 if __name__ == "__main__":
     unittest.main()

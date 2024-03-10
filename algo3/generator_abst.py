@@ -5,16 +5,18 @@ def bstH(array_size):
         ans += 1
     return ans
 
-def generatebbstarray(a: list):
-    a_sorted = sorted(a)
-    len_a = len(a_sorted)
+def generatebbstarray(a):
+    a.sort()
+    len_a = len(a)
     H = bstH(len_a)
     bst = [None] * len_a
     
     index_bst = 0
     for h in range(H,-1,-1):
-        for index_a in range(2**h-1, len_a, 2**(h+1)):
-            bst[index_bst] = a_sorted[index_a]
+        left = 2**h - 1
+        step = 2**(h+1)
+        for index_a in range(left, len_a, step):
+            bst[index_bst] = a[index_a]
             index_bst += 1
     
     return bst
