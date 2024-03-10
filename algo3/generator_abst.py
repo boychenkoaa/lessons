@@ -5,7 +5,7 @@ def bstH(array_size):
         ans += 1
     return ans
 
-def generatebbstarray(a):
+def GenerateBBSTArray(a):
     a.sort()
     len_a = len(a)
     H = bstH(len_a)
