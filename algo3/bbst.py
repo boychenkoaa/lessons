@@ -35,7 +35,7 @@ class BalancedBST:
             return True , 0
         
         left_is_OK, left_height = self._is_balanced_and_height(root_node.LeftChild)
-        right_is_OK, right_height = self._is_balanced_and_height(root_node.LeftChild)
+        right_is_OK, right_height = self._is_balanced_and_height(root_node.RightChild)
         root_is_OK = left_is_OK and right_is_OK and abs(left_height - right_height) < 2
         height = max(left_height, right_height) + 1 
         return root_is_OK, height
