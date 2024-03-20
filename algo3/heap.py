@@ -4,7 +4,7 @@ class Heap:
         self.size = 0
         
     def MakeHeap(self, a: list[int], depth: int):
-        self.HeapArray = [-1] * (2 ** depth - 1)
+        self.HeapArray = [-1] * (2 ** (depth + 1) - 1)
         self.size = 0
         # создаём массив кучи HeapArray из заданного
         # размер массива выбираем на основе глубины depth 
