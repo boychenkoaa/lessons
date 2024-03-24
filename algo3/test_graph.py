@@ -55,9 +55,33 @@ class test_graph(unittest.TestCase):
         self.assertEqual(g.m_adjacency[1][4], 1)
         self.assertEqual(g.m_adjacency[2][3], 0)
         self.assertEqual(g.m_adjacency[2][4], 0)
-        self.assertEqual(g.m_adjacency[1][2], 0)        
+        self.assertEqual(g.m_adjacency[1][2], 0)     
         
-        
+    def test_dfs(self):
+        g = SimpleGraph(15)
+        g.AddVertex("a")
+        g.AddVertex("b")        
+        g.AddVertex("c")
+        g.AddVertex("d")
+        g.AddVertex("e")
+        g.AddVertex("f")
+        g.AddVertex("g")
+        g.AddVertex("h")
+        g.AddVertex("j")
+        g.AddEdge(1, 2)
+        g.AddEdge(1, 3)
+        g.AddEdge(1, 4)
+        g.AddEdge(1, 5)
+        g.AddEdge(5, 6)
+        #g.AddEdge(2, 3)
+        g.AddEdge(3, 4)
+        g.AddEdge(4, 5)
+        g.AddEdge(3, 8)
+        g.AddEdge(4, 8)
+        g.AddEdge(7, 8)
+        way = g.DepthFirstSearch(8, 2)
+        self.assertEqual(way, [8,3,1,2])
+    
 
 if __name__ == "__main__":
     unittest.main()
