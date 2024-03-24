@@ -89,7 +89,7 @@ class SimpleTree:
     def LeafCount(self):
         return len(list(filter(lambda node: len(node.Children)==0, self.GetAllNodes())))
     
-    def EvenTree(self):
+    def EvenTrees(self):
         def walk_action(node:SimpleTreeNode):
             is_even = False
             for child in node.Children:
