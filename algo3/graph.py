@@ -122,5 +122,7 @@ class SimpleGraph:
             else:
                 stack.push(X)
                 self.vertex[X].Hit = True
-                
-        return stack.clear_to_list()[::-1]
+        
+        vert_index_list = stack.clear_to_list()[::-1]
+        ans = [self.vertex[v] for v in vert_index_list]
+        return ans

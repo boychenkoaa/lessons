@@ -80,7 +80,8 @@ class test_graph(unittest.TestCase):
         g.AddEdge(4, 8)
         g.AddEdge(7, 8)
         way = g.DepthFirstSearch(8, 2)
-        self.assertEqual(way, [8,3,1,2])
+        way_values = [v.Value for v in way]
+        self.assertEqual(way_values, ["j","d","b","c"])
     
 
 if __name__ == "__main__":
