@@ -82,6 +82,44 @@ class test_graph(unittest.TestCase):
         way = g.DepthFirstSearch(8, 2)
         way_values = [v.Value for v in way]
         self.assertEqual(way_values, ["j","d","b","c"])
+        way = g.DepthFirstSearch(8, 6)
+        way_values = [v.Value for v in way]
+        self.assertEqual(way_values, ["j","d","b","e","f","g"])        
+        
+    def test_bfs(self):
+        g = SimpleGraph(15)
+        g.AddVertex("a")
+        g.AddVertex("b")        
+        g.AddVertex("c")
+        g.AddVertex("d")
+        g.AddVertex("e")
+        
+        g.AddVertex("f")
+        g.AddVertex("g")
+        g.AddVertex("h")
+        g.AddVertex("j")
+        g.AddVertex("k")
+        g.AddEdge(1, 2)
+        g.AddEdge(1, 3)
+        g.AddEdge(1, 4)
+        g.AddEdge(1, 5)
+        g.AddEdge(5, 6)
+        #g.AddEdge(2, 3)
+        g.AddEdge(3, 4)
+        g.AddEdge(4, 5)
+        g.AddEdge(3, 8)
+        g.AddEdge(4, 7)
+        g.AddEdge(4, 8)
+        g.AddEdge(7, 8)
+        way = g.BreadthFirstSearch(8, 6)
+        way_values = [v.Value for v in way]
+        self.assertEqual(way_values,["j","e","f","g"])    
+        way = g.BreadthFirstSearch(9, 6)
+        way_values = [v.Value for v in way]
+        self.assertEqual(way_values,[])    
+        way = g.BreadthFirstSearch(2, 7)
+        way_values = [v.Value for v in way]
+        self.assertEqual(way_values,["c", "b", "e", "h"])            
     
 
 if __name__ == "__main__":

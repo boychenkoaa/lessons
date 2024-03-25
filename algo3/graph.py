@@ -1,61 +1,138 @@
-class StackNode:
-    def __init__(self, val, next):
-        self.value = val
+class ListNode:
+    def __init__(self, value, prev, next):
+        self.value = value
+        self.prev = prev
         self.next = next
         
-class Stack:
+class List:
     def __init__(self):
-        self._dummy = StackNode(None, None)
+        self._dummy = ListNode(None, None, None)
+        self._dummy.next = self._dummy
+        self._dummy.prev = self._dummy
     
     @property
-    def top(self):
-        if self.head != None:
-            return self.head.value
-        return None
+    def is_empty(self):
+        return self._head == self._dummy
     
-    @property 
-    def head(self):    
+    @property
+    def _head(self):
         return self._dummy.next
     
-    @property 
-    def is_empty(self):
-        return self.head == None
+    @property
+    def _tail(self):
+        return self._dummy.prev
     
-    def push(self, new_value):
-        self._dummy.next = StackNode(new_value, self._dummy.next)
+    def insert_after_node(self, after_node:ListNode, value):
+        new_node = ListNode(value, after_node, after_node.next)
+        after_node.next.prev = new_node
+        after_node.next = new_node
         
-    def pop(self):
+    def delete_node(self, node: ListNode):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+        return node.value
+    
+    def delete_head(self):
         if self.is_empty:
             return None
+        return self.delete_node(self._dummy.next)
+    
+    def delete_tail(self):
+        if self.is_empty:
+            return None
+        return self.delete_node(self._dummy.prev)    
+    
+    def insert_head(self, value):
+        self.insert_after_node(self._dummy, value)
+    
+    def insert_tail(self, value):
+        self.insert_after_node(self._dummy.prev, value)   
+    
+    @property
+    def head_value(self):
+        return self._head.value
+    
+    @property
+    def tail_value(self):
+        return self.tail.value    
         
-        ans = self.top
-        self._dummy.next = self.head.next
-        return ans
+    def clear(self):
+        self._dummy.next = self._dummy
+        self._dummy.prev = self._dummy
     
-    def clear_to_list(self):
+    @property
+    def values_list(self):
         ans = []
-        while not self.is_empty:
-            ans.append(self.pop())
-        return ans
-    
-    def __repr__(self):
-        ans = ""
-        node = self.head
-        while node != None:
-            ans += str(node.value) + ' '
+        node = self._dummy.next
+        while node != self._dummy:
+            ans.append(node.value)
             node = node.next
         return ans
     
+    def __str__(self):
+        return str(self.values_list)
+    
+    def __repr__(self):
+        return str(self)
+    
+class Stack:
+    def __init__(self):
+        self._li = List()
+        
+    def push(self, value):
+        self._li.insert_head(value)
+    
+    def pop(self):
+        return self._li.delete_head()
+    
     def clear(self):
-        self._dummy.next = None
-
+        self._li.clear()
+    
+    @property
+    def values_list(self):
+        return self._li.values_list
+    
+    @property
+    def top(self):
+        return self._li.head_value
+    
+    def __repr__(self):
+        return str(self._li)    
+    
+class Queue:
+    def __init__(self):
+        self._li = List()
+    
+    @property
+    def is_empty(self):
+        return self._li.is_empty
+        
+    def push(self, value):
+        self._li.insert_tail(value)
+    
+    def pop(self):
+        return self._li.delete_head()
+    
+    def clear(self):
+        self._li.clear()
+    
+    @property
+    def values_list(self):
+        return self._li.values_list
+    
+    @property
+    def top(self):
+        return self._li.head_value()
+    
+    def __repr__(self):
+        return str(self._li)
+    
 class Vertex:
     def __init__(self, val):
         self.Value = val
         self.Hit = False
 
 class SimpleGraph:
-
     def __init__(self, size):
         self.max_vertex = size
         self.m_adjacency = [[0] * size for _ in range(size)]
@@ -68,7 +145,6 @@ class SimpleGraph:
                 return i
         return None
             
-        
     # здесь и далее, параметры v -- индекс вершины
     # в списке  vertex
     def RemoveVertex(self, v):
@@ -98,13 +174,19 @@ class SimpleGraph:
                 return i
         return None
     
+    def adjacency_list(self, v):
+        return [i for i in range(self.max_vertex) if self.IsEdge(v, i)]
+    
+    def clear_hits(self):
+        for v in self.vertex:
+            if v != None:
+                v.Hit = False        
+    
     def DepthFirstSearch(self, VFrom, VTo):
         if VFrom == VTo:
             return [VFrom]
         
-        for v in self.vertex:
-            if v != None:
-                v.Hit = False
+        self.clear_hits()
         
         X = VFrom
         stack = Stack()
@@ -123,6 +205,41 @@ class SimpleGraph:
                 stack.push(X)
                 self.vertex[X].Hit = True
         
-        vert_index_list = stack.clear_to_list()[::-1]
+        vert_index_list = stack.values_list[::-1]
         ans = [self.vertex[v] for v in vert_index_list]
         return ans
+    
+    def _find_way_back_hits(self, v_from, v_to):
+        stack = Stack()
+        v = v_to
+        stack.push(self.vertex[v])
+        while v != v_from:
+            v = self.vertex[v].Hit
+            stack.push(self.vertex[v])
+        return stack.values_list        
+    
+    def BreadthFirstSearch(self, VFrom, VTo):
+        if VFrom == VTo:
+            return [VFrom]
+        
+        self.clear_hits()      
+        q = Queue()
+        X = VFrom
+        self.vertex[X].Hit = True
+        q.push(X)
+        while not q.is_empty:
+            X = q.pop()
+            for v in range(self.max_vertex):
+                if self.m_adjacency[X][v] == 1 and self.vertex[v].Hit == False:
+                    self.vertex[v].Hit = X
+                    if v == VTo:
+                        return self._find_way_back_hits(VFrom, VTo)
+                    q.push(v)
+                    
+        return []
+          
+            
+                
+        
+        
+    
