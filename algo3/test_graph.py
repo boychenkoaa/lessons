@@ -112,19 +112,21 @@ class test_graph(unittest.TestCase):
         edges_list = [(1, 6), (1, 7), (1, 8), (2, 3), (2, 4), (2, 5), (3, 5), (3, 6), (3, 7), (6, 8), (6, 9), (8, 9)]
         for edge in edges_list:
             g.AddEdge(*edge)
-        
-        self.assertEqual(g.WeakVertices(), [0, 4, 7])
+        weak_values = [v.Value for v in g.WeakVertices()]
+        self.assertEqual(weak_values, ["a", "e", "h"])
         
         g2 = SimpleGraph(15)
         for c in "abcde":
             g2.AddVertex(c)
         edges_list = [(1, 2), (2, 3), (3, 4), (4, 1)]
         for edge in edges_list:
-            g2.AddEdge(*edge)        
-        self.assertEqual(g2.WeakVertices(), [0, 1, 2, 3, 4])
+            g2.AddEdge(*edge)
+        weak_values = [v.Value for v in g2.WeakVertices()]
+        self.assertEqual(weak_values, ["a", "b", "c", "d", "e"])
         
         g2.AddEdge(1, 3)
-        self.assertEqual(g2.WeakVertices(), [0])
+        weak_values = [v.Value for v in g2.WeakVertices()]
+        self.assertEqual(weak_values, ["a"])
         
         
 if __name__ == "__main__":
