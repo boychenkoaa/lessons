@@ -153,6 +153,10 @@ class SimpleGraph:
         for i in range(self.max_vertex):
             self.m_adjacency[i][v] = 0
             self.m_adjacency[v][i] = 0
+    
+    @property
+    def vertices(self):
+        return [v for v in range(self.max_vertex) if self.vertex[v] != None]
         
 
     def IsEdge(self, v1, v2):
@@ -175,6 +179,8 @@ class SimpleGraph:
         return None
     
     def adjacency_list(self, v):
+        if self.vertex[v] is None:
+            return None
         return [i for i in range(self.max_vertex) if self.IsEdge(v, i)]
     
     def clear_hits(self):
@@ -237,9 +243,16 @@ class SimpleGraph:
                     q.push(v)
                     
         return []
-          
-            
-                
         
+    
+    def vertex_is_strong(self, v):
+        adj_list = self.adjacency_list(v)
+        return any(self.IsEdge(u, w) == 1 for u in adj_list for w in adj_list)
+        
+    def WeakVertices(self):
+        # возвращает список узлов вне треугольников
+        return list(filter(self.vertex_is_strong, self.vertices))
+                
+    
         
     

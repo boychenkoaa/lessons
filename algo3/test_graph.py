@@ -88,29 +88,13 @@ class test_graph(unittest.TestCase):
         
     def test_bfs(self):
         g = SimpleGraph(15)
-        g.AddVertex("a")
-        g.AddVertex("b")        
-        g.AddVertex("c")
-        g.AddVertex("d")
-        g.AddVertex("e")
+        for c in "abcdefghjk":
+            g.AddVertex(c)
         
-        g.AddVertex("f")
-        g.AddVertex("g")
-        g.AddVertex("h")
-        g.AddVertex("j")
-        g.AddVertex("k")
-        g.AddEdge(1, 2)
-        g.AddEdge(1, 3)
-        g.AddEdge(1, 4)
-        g.AddEdge(1, 5)
-        g.AddEdge(5, 6)
-        #g.AddEdge(2, 3)
-        g.AddEdge(3, 4)
-        g.AddEdge(4, 5)
-        g.AddEdge(3, 8)
-        g.AddEdge(4, 7)
-        g.AddEdge(4, 8)
-        g.AddEdge(7, 8)
+        edges_list = [(1, 2), (1, 3), (1, 4), (1, 5), (5, 6), (3, 4), (4, 5), (3, 8), (4, 7), (4, 8), (7, 8)]  
+        for edge in edges_list:
+            g.AddEdge(*edge)
+        
         way = g.BreadthFirstSearch(8, 6)
         way_values = [v.Value for v in way]
         self.assertEqual(way_values,["j","e","f","g"])    
@@ -119,9 +103,30 @@ class test_graph(unittest.TestCase):
         self.assertEqual(way_values,[])    
         way = g.BreadthFirstSearch(2, 7)
         way_values = [v.Value for v in way]
-        self.assertEqual(way_values,["c", "b", "e", "h"])            
-    
-
+        self.assertEqual(way_values,["c", "b", "e", "h"])
+        
+    def test_weak(self):
+        g = SimpleGraph(15)
+        for c in "abcdefghjk":
+            g.AddVertex(c)
+        edges_list = [(1, 6), (1, 7), (1, 8), (2, 3), (2, 4), (2, 5), (3, 5), (3, 6), (3, 7), (6, 8), (8, 9)]
+        for edge in edges_list:
+            g.AddEdge(*edge)
+        
+        self.assertEqual(g.WeakVertices(), [1, 2, 3, 5, 6, 8])
+        
+        g2 = SimpleGraph(15)
+        for c in "abcde":
+            g2.AddVertex(c)
+        edges_list = [(1, 2), (2, 3), (3, 4), (4, 1)]
+        for edge in edges_list:
+            g2.AddEdge(*edge)        
+        self.assertEqual(g2.WeakVertices(), [])
+        
+        g2.AddEdge(1, 3)
+        self.assertEqual(g2.WeakVertices(), [1, 2, 3, 4])
+        
+        
 if __name__ == "__main__":
     unittest.main()
 
