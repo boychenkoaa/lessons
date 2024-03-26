@@ -251,7 +251,7 @@ class SimpleGraph:
         
     def WeakVertices(self):
         # возвращает список узлов вне треугольников
-        return list(filter(self.vertex_is_strong, self.vertices))
+        return list(filter(lambda v: not self.vertex_is_strong(v), self.vertices))
                 
     
         
