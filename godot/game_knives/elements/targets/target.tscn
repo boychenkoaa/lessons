@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bghhrvk1cia3n"]
+
+[ext_resource type="Script" path="res://elements/targets/target.gd" id="1_iqxxi"]
+[ext_resource type="Texture2D" uid="uid://cy61tdinvfpay" path="res://assets/target1.png" id="1_k0ono"]
+[ext_resource type="PackedScene" uid="uid://bcdhj7anyvqft" path="res://elements/targets/Scenes/apple.tscn" id="3_371mq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_di5o2"]
+radius = 146.697
+
+[node name="target" type="CharacterBody2D"]
+collision_layer = 3
+script = ExtResource("1_iqxxi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_k0ono")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_di5o2")
+
+[node name="ItemsContainer" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="Apple" parent="ItemsContainer" instance=ExtResource("3_371mq")]
+position = Vector2(0, 190)
