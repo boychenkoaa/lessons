@@ -1,0 +1,13 @@
+res://scenes/unblock_button/panel_container.tscn
+res://styles/button.stylebox
+res://scenes/knife_shop/knife_shop.tscn
+res://elements/knife/knife.tscn
+res://scenes/Game/Game.tscn
+res://elements/knife_shooter/knife_shooter.tscn
+res://elements/targets/target/target.tscn
+res://elements/apple/apple.tscn
+res://elements/ui/hud/hud.tscn
+res://scenes/start_screen/start_screen.tscn
+res://scenes/shop_item/shop_item.tscn
+res://scenes/unblock_button/unblock_button.tscn
+res://elements/ui/restart_overlay/restart_overlay.tscn
