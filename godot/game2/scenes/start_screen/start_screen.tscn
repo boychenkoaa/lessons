@@ -1,0 +1,75 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpwuti6nqcyod"]
+
+[ext_resource type="PackedScene" uid="uid://dmv6uidd1fs4k" path="res://elements/ui/hud/hud.tscn" id="1_hxlra"]
+[ext_resource type="Texture2D" uid="uid://cso6wdxm7tlg8" path="res://assets/knife1.png" id="2_3ywm6"]
+[ext_resource type="StyleBox" uid="uid://xjloolk6xsp4" path="res://styles/button.stylebox" id="3_ycewy"]
+[ext_resource type="Texture2D" uid="uid://dl8yjyw3eu6tm" path="res://assets/gift-ico.png" id="4_35qc1"]
+
+[node name="StartScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HUD" parent="." instance=ExtResource("1_hxlra")]
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_font_sizes/font_size = 100
+text = "Knives & Apples"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2/VBoxContainer/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("2_3ywm6")
+stretch_mode = 5
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="MarginContainer2/VBoxContainer/CenterContainer2"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.631373, 0, 0.988235, 1)
+theme_override_colors/font_focus_color = Color(0, 0.360784, 0.886275, 1)
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = ExtResource("3_ycewy")
+theme_override_styles/hover = ExtResource("3_ycewy")
+theme_override_styles/pressed = ExtResource("3_ycewy")
+text = "START"
+
+[node name="CenterContainer3" type="CenterContainer" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer2/VBoxContainer/CenterContainer3"]
+layout_mode = 2
+texture_normal = ExtResource("4_35qc1")
+stretch_mode = 5
