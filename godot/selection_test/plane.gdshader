@@ -18,9 +18,9 @@ void vertex() {
 void fragment() {
 	if (dragging)
 	{
-		if ((FRAGCOORD.x <= xmax) && (FRAGCOORD.x >= xmin) &&  (FRAGCOORD.y <= ymax) && (FRAGCOORD.y >= ymin)  && FRONT_FACING )
+		if ((FRAGCOORD.x <= xmax) && (FRAGCOORD.x >= xmin) &&  (FRAGCOORD.y <= ymax) && (FRAGCOORD.y >= ymin) )
 		{
-			ALBEDO = vec3(0.0, 0.0, 1.0);
+			ALBEDO = vec3(1.0, 0.0, 1.0);
 		}
 	}
 }
