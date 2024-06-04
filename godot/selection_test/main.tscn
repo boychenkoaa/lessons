@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3 uid="uid://da33gycc4oe7p"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_aqkpm"]
+[ext_resource type="Shader" path="res://plane.gdshader" id="2_u3wnt"]
+
+[sub_resource type="Environment" id="Environment_4ljqg"]
+background_mode = 1
+background_color = Color(0.576471, 1, 1, 1)
+ambient_light_energy = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2crpo"]
+render_priority = 1
+shader = ExtResource("2_u3wnt")
+shader_parameter/xmin = 100.0
+shader_parameter/xmax = 250.0
+shader_parameter/ymin = 100.0
+shader_parameter/ymax = 300.0
+shader_parameter/dragging = true
+shader_parameter/is_red = false
+
+[sub_resource type="TorusMesh" id="TorusMesh_yat2q"]
+material = SubResource("ShaderMaterial_2crpo")
+inner_radius = 50.0
+outer_radius = 100.0
+
+[sub_resource type="Theme" id="Theme_b8hlj"]
+
+[node name="main" type="Node3D"]
+script = ExtResource("1_aqkpm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_4ljqg")
+
+[node name="SelectionRect" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 1, 1, 0.14902)
+polygon = PackedVector2Array(0, 0, 0, 100, 100, 100, 100, 0)
+
+[node name="torus_points" type="MeshInstance3D" parent="."]
+layers = 4
+
+[node name="torus" type="MeshInstance3D" parent="."]
+layers = 2
+cast_shadow = 0
+mesh = SubResource("TorusMesh_yat2q")
+
+[node name="Light" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.709116, 0.705092, 0, -0.705092, 0.709116, 0, 19.0222, 851.315)
+light_cull_mask = 4294967265
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.182124, 0.796287, -0.576852, -0.23974, 0.604919, 0.75934, 0.953601, 4.67153e-08, 0.301072, -136.818, 100.066, -7.22477)
+rotation_order = 0
+
+[node name="Label" type="Label" parent="."]
+offset_right = 316.0
+offset_bottom = 89.0
+theme = SubResource("Theme_b8hlj")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.788314, 0.339326, 0.0337899, 1)
+text = "qqq"
