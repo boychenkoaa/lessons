@@ -1,0 +1,8 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1717459926
+arxiv.gd::GDScript::-1::1717272383::0::1::::<>RefCounted<>::
+icon.svg::CompressedTexture2D::2616002758034535654::1717189354::1717189358::1::::<><>::
+main.gd::GDScript::-1::1717459429::0::1::::<>Node3D<>::
+main.tscn::PackedScene::7218776682534060127::1717459886::0::1::::<><>::res://main.gd<>res://plane.gdshader
+new_script.gd::GDScript::-1::1717272383::0::1::::<>Node<>::
+plane.gdshader::Shader::-1::1717459893::0::1::::<><>::
