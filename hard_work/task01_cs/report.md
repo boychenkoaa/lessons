@@ -6,7 +6,7 @@
 - Лечим метод `point_check`
 
 Файлы
-- до [example1.py](example1.py) , ЦС > 500
+- до [example1.py](example1.py) , ЦС = 17
 - после [example1_done.py](example1_done.py) ЦС = 2
 
 Проделан рефакторинг:
@@ -28,7 +28,7 @@
 - Метода лечения два -- упрощение условий и использование полиморфизма
 
 Файлы
-- до [example2.py](example2.py) ЦС > 50
+- до [example2.py](example2.py) ЦС = 12
 - после [example2_done.py](example2_done.py) ЦС = 1
 
 Снижаем ЦС:
@@ -43,7 +43,7 @@
 - табличный метод позволил избавиться сразу от всего
 
 Файлы
-- до [example3.py](example3.py) ЦС = 10
+- до [example3.py](example3.py) ЦС = 12
 - после [example3_done.py](example3_done.py) ЦС = 1
   
 Снижаем ЦС
