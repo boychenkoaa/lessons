@@ -97,12 +97,12 @@ class LinkedList (Generic[T]):
     
     # предусловие: список не пуст
     # постусловие: добавлен 1 элемент
-    def put_right(self, new_value):
+    def put_right(self, new_value: T):
         ...
     
     # предусловие: список не пуст
     # постусловие: добавлен 1 элемент
-    def put_left(self):
+    def put_left(self, new_value: T):
         ...
         
     # предусловие: список не пуст
@@ -116,7 +116,7 @@ class LinkedList (Generic[T]):
     
     # предусловие: список пуст
     # постусловие: текущее значение = new_value и размер = 1
-    def add_to_empty(self, value):
+    def add_to_empty(self, new_value: T):
         ...
         
     # предусловие: список не пуст
