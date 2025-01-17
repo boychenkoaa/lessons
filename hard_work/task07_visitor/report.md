@@ -18,4 +18,4 @@
 
 ### Файлы
 - до [blocks.py](blocks.py)
-- после [blocks_new.py](blocks_new.py)
+- после [blocks_new.py](blocks_new.py) (он длиннее потому что я добавил туда еще один постпроцессор:)
