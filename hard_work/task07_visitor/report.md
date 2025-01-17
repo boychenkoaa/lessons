@@ -17,5 +17,5 @@
 - Изучил двойную диспетчеризацию
 
 ### Файлы
-- Код до [blocks.py](blocks.py)
-- Код после [blocks_new.py](blocks_new.py)
+- до [blocks.py](blocks.py)
+- после [blocks_new.py](blocks_new.py)
