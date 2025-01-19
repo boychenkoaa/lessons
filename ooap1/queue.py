@@ -9,7 +9,7 @@ class Queue(Generic[T]):
         self._c_status = Status.NIL
         self._li = TwoWayList[T]
     
-    # запросы
+    # запросы без предусловий
     @property
     def size(self):
         return self._li.size
@@ -26,7 +26,7 @@ class Queue(Generic[T]):
     def is_empty(self):
         return self._li.is_value
     
-    # предусловие: не пуст
+    # запрос, предусловие: не пуст
     @property    
     def first(self) -> T:
         self._li.head
@@ -39,7 +39,7 @@ class Queue(Generic[T]):
             return None        
         return ans
     
-    # предусловие: не пуст    
+    # запрос, предусловие: не пуст    
     @property
     def last(self) -> T:
         self._li.tail
@@ -52,8 +52,7 @@ class Queue(Generic[T]):
             return None        
         return ans
         
-    # команда
-    # предусловие: не пуст
+    # команда, предусловие: не пуст
     def pop(self):
         self._li.head
         if self._li.head_status == Status.ERR:
@@ -62,7 +61,7 @@ class Queue(Generic[T]):
         self._li.remove
         self._c_status = self._li.remove_status
         
-    # команда с предусловием (не пуст)
+    # команда без предусловий
     def push(self, new_value: T):
         if self.is_empty:
             self._li.add_to_empty(new_value)
