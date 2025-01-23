@@ -40,7 +40,6 @@ class HashTable:
         self._seek(value)
         return self._seek_status == SeekStatus.EXIST    
 
-    # предусловие -- место есть
     def _seek(self, value: str) -> int:
         index = self._hash(value)
         start_index = index
