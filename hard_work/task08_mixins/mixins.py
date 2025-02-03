@@ -14,9 +14,9 @@ class Mesh2D:
         ...
 
 class ToMeshMixin:
-  	@property
+	@property
   	def  segments(self) -> list[Segment2]:
-        raise NotImplementedError()
+        	raise NotImplementedError()
   
   	def triangulate_segment(self, segment: Segment2) -> list[Triangle2]:
   		beg, end = segment
