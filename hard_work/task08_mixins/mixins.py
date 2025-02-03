@@ -36,7 +36,7 @@ class ToMeshMixin:
   		
    	def plot(self, plt, **kwargs)
         for segment in segments:
-            plt.plot([segment[B][X], segment[E][X]],[segment[B][Y], segment[E], [Y]], **kwwagrs)
+            plt.plot([segment[B][X], segment[E][X]],[segment[B][Y], segment[E], [Y]], **kwagrs)
 
   # абстрактная геометрия
   class Geometry2D:
