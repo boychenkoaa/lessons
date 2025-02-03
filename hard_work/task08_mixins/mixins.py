@@ -16,7 +16,7 @@ class Mesh2D:
 class ToMeshMixin:
 	@property
   	def  segments(self) -> list[Segment2]:
-        	raise NotImplementedError()
+        raise NotImplementedError()
   
   	def triangulate_segment(self, segment: Segment2) -> list[Triangle2]:
   		beg, end = segment
@@ -30,23 +30,23 @@ class ToMeshMixin:
   
   # примесь для печати в матплотлибе
   class PlotMixin:
-  	  @property
-  	  def segments(self) -> list[Segment2]:
-          raise NotImplementedError()
+  	@property
+  	def segments(self) -> list[Segment2]:
+        raise NotImplementedError()
   		
-   	  def plot(self, plt, **kwargs)
-          for segment in segments:
-              plt.plot([segment[B][X], segment[E][X]],[segment[B][Y], segment[E], [Y]], **kwwagrs)
+   	def plot(self, plt, **kwargs)
+        for segment in segments:
+            plt.plot([segment[B][X], segment[E][X]],[segment[B][Y], segment[E], [Y]], **kwwagrs)
 
   # абстрактная геометрия
   class Geometry2D:
-      ...
-  	  @property
-  	  def segments(self):
-          raise NotImplementedError()
+    ...
+    @property
+  	def segments(self):
+        raise NotImplementedError()
 
   # пример
   class ProjectPline2D(Geometry2D, ToMeshMixin, PlotMixin):
-  	  ...
-  	  def segments(self):
-          return list(zip(self.points, self.points[1:]))
+  	...
+  	def segments(self):
+        return list(zip(self.points, self.points[1:]))
