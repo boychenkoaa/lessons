@@ -58,7 +58,7 @@ class NativeDictionary:
         self._cursor = None
         self._remove_status = Status.NIL
     
-    # искать подходящее незанятое место, установить seek на него
+    # установить курсор на первое подходящее незанятое место
     # предусловие -- место существует
     def _seek(self, key: str):
         self._cursor = self._hash(key)
