@@ -2,63 +2,49 @@
 
 ## 1. Методы, используемые только в тестах
 
-**тип 1.** Устаревшие методы-времянки, отражающие промежуточное состояние,
+**тип 1.** 
+Устаревшие методы-времянки, отражающие промежуточное состояние,
 например, встретилось такое чудо
 ```
-class Manipulator2D	
-	def linestyle(self, style_num: int):
+class Manipulator2D:
+    ....
+    def linestyle(self, style_num: int):
         if style_num == None:
             return self.DefaultLineStyle
     return style_num
 ```
-нужно вынести их из класса в другой уровень: либо унаследоваться (что на самом деле криво)
-либо сделать их методами класса-наследника от TestCase и ему подобных
-**способ 1**
+нужно вынести их из класса в другой уровень: либо унаследоваться
 ```
 class ForTestManipulator2D(Manipulator2D)
-	def repair_linestyle(self, style_num: int|None) -> int:
+    def repair_linestyle(self, style_num: int|None) -> int:
         if style_num == None:
             return self.DefaultLineStyle
-        return style_num
+    return style_num
 ```
 
-**способ 2**
+либо сделать их методами класса-тестировщика
+
 ```
 class TestManipulator2D(Unittest.TestCase)
 	def repair_linestyle(self, manipulator, style_num: int|None) -> int:
-        if style_num == None:
-            return self.DefaultLineStyle
-        return style_num
+		if style_num == None:
+            		return self.DefaultLineStyle
+	return style_num
 ```
 
 Мне если честно, оба способа кажутся пока что кривыми
 
--  псевдо-моки: когда в класс включаются "имитаторы" функциональности других классов для тестирования их взаимодействия
+Еще один случай (прочитал в интернете) -- "псевдо-моки": когда в класс включаются "имитаторы" функциональности других классов для тестирования их взаимодействия
 решение -- писать полноценные моки
 
 ### цепочки методов
 основной метод
+
 ```
 def slice(self, z_list:list[float], name: str):
 	planes_list = self.slice_planes(z_list, name)
 	faces = self.faces_for_slicing
-	if faces == None:
-		return False
-	sic_tuple_list = [self.add_sic(plane, self.faces_for_slicing) for plane in planes_list]
-	sic_list = [t[0] for t in sic_tuple_list]
-	sk_list = []
-	for i in range(len(sic_list)):
-		sketch = self.add_sketch(planes_list[i], self.slice_name(name, i, z_list[i]))
-	    sic = sic_list[i]
-	    self.add_arrows_to_sketch(sketch)
-	    self.ic_to_sketch(sketch, sic)
-	    sketch.Update()            
-	    self.api7.IFeature7(sic).Delete()
-	    sketch.DeleteWrongProjection()
-	    sk_list.append(sketch)
-	
-	self.add_macroobject(name + " плоскости", planes_list)
-	self.add_macroobject(name + " эксизы", sk_list)
+	...
 ```
 для краткости, не буду приводить полный код:
 цепочка вызовов
