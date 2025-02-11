@@ -11,7 +11,9 @@ class SeekStatus(Enum):
     EMPTY = 1
     OVERFLOW = 2
     EXIST = 3
-    
+
+# АТД Хеш-таблица
+
 class HashTable:
     def __init__(self, size: int):
         self._size = size if size % 2 == 1 else size + 1
