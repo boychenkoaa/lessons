@@ -18,33 +18,41 @@ DYN_ARRAY_RESIZE_COEF = 2
 class DynArray(Generic[T]):
     def __init__(self):
         self.clear()
-    
+
+    # запрос -- длина массива
     @property
-    def count(self) :
+    def count(self) -> int:
         return self._count
-    
-    def __len__(self):
+
+    # запрос -- длина массива
+    def __len__(self) -> int:
         return self.count
 
+    # команда - очистка массива
+    # постусловие -- список пуст
     def clear(self):
         self._count = 0
         self._capacity = START_ARRAY_CAPACITY
         self._array = START_ARRAY_CAPACITY * [0]
         self._command_status = Status.NIL
         self._query_status = Status.NIL        
-        
+
+    # запрос статус последней выполненной команды с предусловием
     @property
     def command_status(self):
         return self._command_status
 
+    # запрос статус последней выполненного запроса с предусловией
     @property
     def query_status(self):
         return self._query_status    
 
+    # запрос -- общая емкость
     @property
     def capacity(self):
         return self._capacity 
 
+    # запрос -- доступ к элементу по номеру
     # предусловие -- индекс в диапазоне
     def __getitem__(self, index: int):
         if index >= self._count or index < 0:
@@ -52,7 +60,8 @@ class DynArray(Generic[T]):
             return None
         self._query_status = Status.OK
         return self._array[index]
-        
+
+    # запрос -- индекс первого вхождения элемента или None если элемента нет
     # предусловий нет
     def find(self, value: T) -> int | None:
         for i in range(self.count):
@@ -75,13 +84,10 @@ class DynArray(Generic[T]):
         self._array = new_array
         self._capacity = new_capacity
         self._command_status = Status.OK
-    
+
+    # команда -- добавляет в конец списка элемент
+    # постусловие -- добавлен 1 элемент
     def append(self, itm: T):
-        """
-        добавляет в конец
-        предусловий нет, добавить в конец можно всегда
-        постусловие - добавлен 1 элемент
-        """
         if self.count == self.capacity:
             self._resize(2*self.capacity)
             if self._command_status == Status.ERR:
@@ -89,7 +95,9 @@ class DynArray(Generic[T]):
         self._array[self.count] = itm
         self._count += 1
 
+    # команда -- вставка на i-е место
     # предусловие: 0 <= i <= count
+    # постусловие -- добавлен 1 элемент
     def insert(self, i: int, itm: T):
         if (i < 0) or (i > self.count):
             self._command_status = Status.ERR
@@ -104,9 +112,11 @@ class DynArray(Generic[T]):
         self._array[i] = itm
         self._count += 1
         self._command_status = Status.OK
-    
+
+    # команда -- удалить элемент по индексу
     # предусловие: 0 <= i <= count
-    def pop(self, i):
+    # постусловие -- удален один элемент
+    def pop(self, i: int):
         if i < 0 or i > self.count:
             self._command_status = Status.ERR
             return   
@@ -123,7 +133,7 @@ class DynArray(Generic[T]):
                 return
         self._command_status = Status.OK
         
-    
+    # команда - удалить первое вхождение элемента, по значению
     # предусловие: элемент существует
     # постусловие: стало меньше на 1 элемент
     def remove(self, value: T):
