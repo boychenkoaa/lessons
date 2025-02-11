@@ -15,14 +15,15 @@ class PowerSet(HashTable):
     def __iter__(self):
         return iter(filter(lambda x: x != self._BUSY_SLOT and x != None, self._slots))
     
-    #запросы
+    # запрос -- пересечение множеств
     def intersection(self, other: PowerSet) -> PowerSet:
         ans = PowerSet()
         for elem in other:
             if self.has_value(elem):
                 ans.put(elem)
         return ans
-    
+
+    # запрос -- объединение множеств
     def union(self, other: PowerSet) -> PowerSet:
         ans = PowerSet()
         for elem in self:
@@ -32,8 +33,10 @@ class PowerSet(HashTable):
             ans.put(elem)
         return ans
     
+    # запрос -- является ли подмножеством
     def issubset(self, other: PowerSet) -> bool:
         return all(other.has_value(value) for value in self)
     
+    # запрос -- совпадают ли множества
     def __eq__(self, other: PowerSet) -> bool:
         return self.issubset(other) and other.issubset(self)
