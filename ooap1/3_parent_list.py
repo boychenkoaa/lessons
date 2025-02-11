@@ -58,7 +58,7 @@ class ParentList (Generic[T]):
         node.next.prev = new_node
         node.next = new_node
         
-    
+    # запросы-статусы
     @property
     def get_status(self)  -> Status:
         return self._get_status
@@ -106,7 +106,9 @@ class ParentList (Generic[T]):
     @property
     def replace_all_status(self) -> Status:
         return self._replace_all_status
-    
+
+    # запросы обычные
+    # получить текущий элемент
     # предусловие: список не пуст
     def get(self) -> T:
         if not self.is_value:
@@ -115,7 +117,7 @@ class ParentList (Generic[T]):
         self._get_status == Status.OK
         return self._cursor.value
         
-    
+    # размер списка
     def size(self) -> int:
         return self._size
         
@@ -127,7 +129,7 @@ class ParentList (Generic[T]):
             return False
         return self._cursor == self._head_node
         
-    
+    # запрос -- в хвосте ли курсор
     # предусловие: список не пуст
     @property
     def is_tail(self) -> bool:
@@ -137,15 +139,15 @@ class ParentList (Generic[T]):
         self._is_tail_status = Status.OK
         return self._cursor == self._tail_node
     
-    # проверяет пустой ли список
+    # запрос -- пустой ли список
     @property
     def is_value(self) -> bool:
         return not self._dummy.next.is_dummy
     
     # команды
     # команда установить курсор в голову
-    # предусловие: список не пуст
-    # постусловие: курсор в голове
+    # предусловие -- список не пуст
+    # постусловие -- курсор в голове
     def head(self):
         if not self.is_value:
             self._head_status = Status.ERR
@@ -154,8 +156,8 @@ class ParentList (Generic[T]):
         self._head_status = Status.OK
     
     # команда установить курсор в хвост
-    # предусловие: список не пуст
-    # постусловие: курсор в хвосте
+    # предусловие -- список не пуст
+    # постусловие -- курсор в хвосте
     def tail(self):
         if not self.is_value:
             self._tail_status = Status.ERR
@@ -172,9 +174,9 @@ class ParentList (Generic[T]):
         self._cursor = self._cursor.next
         self._right_status = Status.OK
         
-    
-    # предусловие: список не пуст
-    # постусловие: добавлен 1 элемент
+    # добавить элемент справа от курсора
+    # предусловие -- список не пуст
+    # постусловие -- добавлен 1 элемент
     def put_right(self, new_value):
         if not self.is_value:
             self._put_right_status = Status.ERR
@@ -184,11 +186,9 @@ class ParentList (Generic[T]):
         self._cursor.next.prev = new_node
         self._cursor.next = new_node
         self._size += 1
-        # не очень ясно, что делатm с постусловием
-        # считать размер долго, проверять, что size увеличился на 1 нет смысла
         self._put_right_status = Status.OK
         
-    
+    # добавить элемент слева от курсора
     # предусловие: список не пуст
     # постусловие: добавлен 1 элемент
     def put_left(self, new_value):
@@ -203,7 +203,8 @@ class ParentList (Generic[T]):
         # не очень ясно, что делатm с постусловием
         # считать размер долго, проверять, что size увеличился на 1 нет смысла
         self._put_left_status = Status.OK        
-        
+
+    # удалить элемент под курсором и сдвинуть вправо по возможности (влево если нет возможности)
     # предусловие: список не пуст
     # постусловие: удален 1 элемент
     def remove(self):
@@ -216,7 +217,7 @@ class ParentList (Generic[T]):
         self._size -= 1
         self._remove_status = Status.OK
         
-        
+    # очистка
     # постусловие: список пуст
     def clear(self):
         self._dummy = ParentListNode(None, None, None, is_dummy = True)
@@ -226,8 +227,9 @@ class ParentList (Generic[T]):
         self._size = 0
         self._set_nil_statuses()
     
+    # команда - добавление в пустой список
     # предусловие: список пуст
-    # постусловие: текущее значение = new_value и размер = 1
+    # постусловие: значиние курсора = new_value и размер = 1
     def add_to_empty(self, value):
         if self.is_value:
             self._add_to_empty_status = Status.ERR
@@ -235,12 +237,13 @@ class ParentList (Generic[T]):
         self._insert_after_node(self._dummy, value)
         self._cursor = self._dummy.next
         
-        
+    № команда - добавление в хвост непустого списка
     # предусловие: список не пуст
     # постусловие: добавлен 1 элемент
     def add_tail(self, new_value: T):
         self._insert_after_node(self._tail_node)
-        
+    
+    # команда -- установить по курсору значение new_value
     # предусловие: список не пуст
     # постусловие: текущее значение = new_value
     def replace(self, new_value: T):
@@ -250,8 +253,8 @@ class ParentList (Generic[T]):
         
         self._cursor.value = new_value
         self._replace_status = Status.OK
-        
     
+    # команда - установить курсор на первое вхождение new_value
     # предусловие: список не пуст и такое значение существует
     # постусловие: текущее значение = new_value
     def find(self, value: T):
@@ -265,7 +268,7 @@ class ParentList (Generic[T]):
             
         self._find_status = Status.ERR if self._cursor.is_dummy else Status.OK
             
-            
+    # команда -- удалить все вхождения value        
     # предусловие -- список не пуст
     # постусловие: в спискне нет значений типа value (проверка неэффективна)
     def remove_all(self, value: T):
@@ -288,7 +291,7 @@ class TwoWayList(ParentList):
         super()._set_nil_statuses()
         self._left_status = Status.NIL
         
-    
+    # команда -- сдвинуть курсор влево, если возможно
     # предусловие -- курсор не в голове и список не пуст
     def left(self):
         if not self.is_value or self.is_tail:
@@ -296,7 +299,8 @@ class TwoWayList(ParentList):
             return
         self._cursor = self._cursor.prev
         self._left_status = Status.OK
-        
+    
+    # запрос статуса сдвига влево
     @property
     def left_status(self):
         return self._left_status
