@@ -22,24 +22,24 @@ class HashTable:
         self._remove_status = Status.NIL
         self._BUSY_SLOT = -1
     
+    # статус команды добавления
     @property
     def put_status(self) -> Status:
         return self._put_status
-    
+
+    # статус команды удаления
     @property
     def remove_status(self) -> Status:
         return self._remove_status    
-    
+
+    # хеш функция
     def _hash(self, value: str) -> int:
         if value == "":
             return 0
         ans = ord (value[0]) % self.size
         return ans
 
-    def has_value(self, value: str) -> bool:
-        self._seek(value)
-        return self._seek_status == SeekStatus.EXIST    
-
+    # поиск места для элемента "черновой"
     def _seek(self, value: str) -> int:
         index = self._hash(value)
         start_index = index
@@ -56,8 +56,12 @@ class HashTable:
         self._seek_status = SeekStatus.EMPTY
         return index
 
-    # команды
+    # запрос -- есть ли значение
+    def has_value(self, value: str) -> bool:
+        self._seek(value)
+        return self._seek_status == SeekStatus.EXIST    
 
+    # рехеширование
     def _rehash(self):
         self.size = self.size * 2 + 1
         old_slots = copy(self._slots)
@@ -66,7 +70,11 @@ class HashTable:
             if value != None and value != self._BUSY_SLOT:
                 self.put(value)    
     
-    # предусловие: value есть
+    # команды
+    
+    # команда -- удалить элемент
+    # предусловие -- value есть
+    # постусловие -- удален 1 элемент
     def remove(self, value: str):
         index = self._seek(value)
         if self._seek_status != SeekStatus.EXIST:
@@ -76,8 +84,10 @@ class HashTable:
         self._slots[index] = self._BUSY_SLOT
         self._remove_status = Status.OK
             
-        
+    
+    # команда -- добавить элемент
     # предусловие: элемента нет
+    # постусловие -- добавлен 1 элемент
     def put(self, value: str):
         index = self._seek(value)
         if self._seek_status == SeekStatus.EXIST:
