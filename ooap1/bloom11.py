@@ -19,10 +19,12 @@ class SimpleBloomFilter:
         self._remove_status = Status.NIL
     
     # запросы, все без предусловий
+    def remove_status(self) -> Status:
+        return self._remove_status
     
     # массив значений по индексам
     @property
-    def counts(self):
+    def counts(self) -> list[int]:
         return deepcopy(self._counts)
     
     # хеш
