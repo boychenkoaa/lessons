@@ -38,9 +38,11 @@ def slice(self, z_list:list[float], name: str):
     faces = self.faces_for_slicing
     ...
 ```
-Для краткости, не буду приводить полный код:
-Цепочка вызовов изначальная: `slice -> faces_for_slicing ->  faces_of_body -> body_for_slicing -> selected_bodies -> selection3d`
-Цепочку  `faces_of_body -> body_for_slicing -> selected_bodies`  можно свернуть в `faces_for_slicing`
+Для краткости, не буду приводить полный код.
+
+Цепочка вызовов изначальная: `slice -> faces_for_slicing ->  faces_of_body -> body_for_slicing -> selected_bodies -> selection3d`.
+
+Цепочку  `faces_of_body -> body_for_slicing -> selected_bodies`  можно свернуть в `faces_for_slicing`.
 
 ```
 def faces_for_slicing(self) -> list:
@@ -56,7 +58,7 @@ def faces_for_slicing(self) -> list:
     return ans
 ```
 
-##  Слишком большой список параметров 
+##  3. Слишком большой список параметров 
 Классика, все уже давно вылечено, приведу пример
 ```
 class pointBlock(iBlock):
@@ -84,7 +86,7 @@ class pointBlock(iBlock):
         self.point8 = rpoint8
 ```
 
-## Странные решения: дублирование методов
+## 4. Странные решения: дублирование методов
 Излишний функционал
 ```
 class Graph:
@@ -113,7 +115,7 @@ class Graph:
         return ans
 ```
 
-## Чрезмерный результат
+## 5. Чрезмерный результат
 Из некритичного, у меня есть чрезмерный результат, заложенный на будущее -- помимо самих координат хранятся индексы отрезков, которые змейка пересекла:
 
 `snaked_pline` помимо координат точек несет в себе доп. информацию
