@@ -19,6 +19,8 @@ class SimpleBloomFilter:
         self._remove_status = Status.NIL
     
     # запросы, все без предусловий
+    # статус операции удаления элемента
+    @property
     def remove_status(self) -> Status:
         return self._remove_status
     
