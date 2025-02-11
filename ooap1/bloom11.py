@@ -28,6 +28,10 @@ class SimpleBloomFilter:
     @property
     def counts(self) -> list[int]:
         return deepcopy(self._counts)
+
+    @property
+    def size(self) -> int:
+        return self._size
     
     # хеш
     def _hash17(self, s: str) -> int:
