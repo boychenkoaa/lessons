@@ -331,10 +331,12 @@ def connected_graph_topology_type(connected_graph: BiGraph) -> CGTT:
 
 ## Пример 6
 Снова типовая ошибка, при спешке не сделал перечисление
+Возвращаемый результат неизвестен
+
 **Было**
 ```python
 class Doc2:
-	def selection2d_by_types(self, types: list[int]):
+	def selection2d_by_types(self, types: list[int]) -> list[Any]:
 		...
 
 ```
@@ -351,7 +353,7 @@ class Geom2DType:
 	...
 
 class Doc2:
-	def selection2d_by_types(self, types: list[Geom2DType]):
+	def selection2d_by_types(self, types: list[Geom2DType]) -> list[Any] :
 		...
 ```
 
