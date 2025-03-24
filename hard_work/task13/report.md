@@ -13,7 +13,7 @@ try:
 except:
     showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров УП")
 finally:
-	f.close()
+    f.close()
 
 try:
     f = open(DEFAULT_PATH_PROPS_FILENAME)
@@ -21,24 +21,24 @@ try:
 except:
     showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров траектории")    
 finally:
-	f.close()
+    f.close()
 ```
 
 стало чуть аккуратнее
 ```python
 if not os.path.exists(DEFAULT_JOB_PROPS_FILENAME):
-	showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров УП")
-	exit()
+    showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров УП")
+    exit()
 
 if not os.path.exists(DEFAULT_PATH_PROPS_FILENAME):
-	showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров траектории")
-	exit()
+    showerror(title="Ошибка", message="Некорректный или отсутствующий файл параметров траектории")
+    exit()
 	
 with open(DEFAULT_JOB_PROPS_FILENAME) as f:
-		default_job_props = json.load(f)
+    default_job_props = json.load(f)
 
 with open(DEFAULT_PATH_PROPS_FILENAME) as f:
-		default_path_props = json.load(f)
+    default_path_props = json.load(f)
 
 ```
 
@@ -60,20 +60,20 @@ def cond(condition_values: list[ConditionValue], default_value: Any) -> Any:
 **Пример использования**
 Было
 ```python
-	Ne = ...
+def get_cc_topo(graph: BiGraph):
+    Ne = ...
     degrees = ...
     Nv = ...
     if Nv == 0:
-	    return CCTopo.EMPTY
-	if Nv == 1:
-		return CCTopo.POINT
-	if (Nv == 2) and (Ne == 1):
-		return CCTopo.SEGMENT
-	if all([degree == 2 for degree in degrees]):
-		return CCTopo.CONTOUR
-	if Ne == Nv - 1:
-		return CCTopo.PLINE
-    
+        return CCTopo.EMPTY
+    if Nv == 1:
+        return CCTopo.POINT
+    if (Nv == 2) and (Ne == 1):
+        return CCTopo.SEGMENT
+    if all([degree == 2 for degree in degrees]):
+        return CCTopo.CONTOUR
+    if Ne == Nv - 1:
+	    return CCTopo.PLINE
     return CCTopo.UNKNOWN
 ```
 Стало
@@ -90,10 +90,14 @@ def cond(condition_values: list[ConditionValue], default_value: Any) -> Any:
     return cond(condition_values, CCTopo.UNKNOWN)
 ```
 
-Стало короче, условия идут единым блоком, можно отделить логику принятия решения от исполнения.
+**Что изменилось**
+- cтало чуть короче
+- можно отделить логику принятия решения от исполнения.
+- улучшилась предсказуемость (если случай сработал -- выполнение остановится)
 
 ## Пример 3. Проверка предусловий
 Моя идея, мое исполнение.
+
 Декоратор для проверки предусловий (проверяет условие, если неверно -- ставит статус = `ERR`  и возвращает `None`, также можно сохранять последнее пользовательское сообщение об ошибке).
 Реализация внутри построена на `try-except`, но это надежно инкапсулировано в одном методе одного класса и не выходит за его пределы.
 
@@ -154,6 +158,7 @@ class Precondition:
 ```
 
 **Пример использования**
+
 Было
 ```python
 def remove_vertex(self, vert_id: int):
@@ -174,10 +179,11 @@ def remove_vertex(self, vert_id: int):
     for edge in filter(lambda ed: ed[0] == vert_id or ed[1] == vert_id, self.edges_values):
 	    ...
 ```
-(+) сокращение кода в 3 раза, 
-(+) синтаксически сильно удобнее: нет условия, есть явное указание на предусловие не только в комментарии
-(-) возможно возрастут временные затраты 
-(-) если забыть декоратор, работать будет, но криво -- при проверке предусловия будет выброшено настоящее исключение
+**Что изменилось**
+- (+) сокращение кода в 3 раза, 
+- (+) синтаксически сильно удобнее: нет условия, есть явное указание на предусловие не только в комментарии
+- (-) возможно возрастут временные затраты 
+- (-) если забыть декоратор, работать будет, при проверке предусловия будет выброшено настоящее исключение
 ## Дальнейшие планы
 - добавить логирование в обработку предусловий
 - добавить логирование как декоратор
@@ -186,6 +192,6 @@ def remove_vertex(self, vert_id: int):
 - добавить несколько условий и сообщений, аналогично `cond`
 ## Выводы
 - Факторизация это обобщение принципа `DRY`
-- В `Python` для факторизации можно использовать декораторы
+- В `Python` для факторизации можно использовать собственные декораторы (без фанатизма)
 
 
