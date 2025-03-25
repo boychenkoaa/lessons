@@ -174,7 +174,7 @@ def remove_vertex(self, vert_id: int):
 ```python
 @Precondition.on
 def remove_vertex(self, vert_id: int):
-	self.pre_check(self.has_vert_id(vert_id))
+    self.pre_check(self.has_vert_id(vert_id))
     
     for edge in filter(lambda ed: ed[0] == vert_id or ed[1] == vert_id, self.edges_values):
 	    ...
