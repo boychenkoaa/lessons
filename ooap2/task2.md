@@ -13,7 +13,7 @@ class NonZeroQuaternion(Quaternion):
             self._status = Status.ERR
 
     @property
-    def R(self):
+    def R(self) -> float:
         return (x**2+y*2+z**2+w**2)**0.5
 
     # и связаное с ним расширение
