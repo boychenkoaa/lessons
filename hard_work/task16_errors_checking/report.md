@@ -1,10 +1,9 @@
-# Неочевидные проектные ошибки
-
 Общее описание:
-- 1, 2 -- простые единичные проверки "на дурака". Кажутся немного надуманными, но может быть я неправ.
-- 3 -- замена множественных проверок состояния на отлов выброшенного исключения при вызовах API (для запроса)
-- 4 -- поднимаем валидацию данных формы ввода в Qt на новый уровень абстракции
-- 5 -- разделяем логические слои и через это разносим запросы к предусловиям
+1, 2 -- простые единичные проверки "на дурака". Кажутся немного надуманными, но может быть я неправ.
+3 -- замена множественных проверок состояния на отлов выброшенного исключения при вызовах API (для запроса)
+4 -- поднимаем валидацию данных формы ввода в Qt на новый уровень абстракции
+5 -- разделяем логические слои и через это разносим запросы к предусловиям
+
 
 ## Пример 1 
 
@@ -13,10 +12,10 @@
 **Было**: кватернион может оказаться вырожден, у самого класса `Quaternion` соответствующих проверок нет.
 ```python
 class AnglesConverter:
-	...
-	def q2euler(self, q: Quaternion, euler_type: EulerType) -> vec3:
-		if q.R <= self.epsilon:
-			return None
+    ...
+    def q2euler(self, q: Quaternion, euler_type: EulerType) -> vec3:
+        if q.R <= self.epsilon:
+            return None
 ```
  
  **Стало**
@@ -24,16 +23,16 @@ class AnglesConverter:
 
 ```python
 class NonZeroQuaternion(Quaternion, Precondition)
-	@Precondition.on
+    @Precondition.on
     def __init__(self, w: float,x: float, y: float, z: float):
-		super().__init(w,x,y,z)
-		self.pre_check(self.R <= self.epsilon):
+        super().__init(w,x,y,z)
+        self.pre_check(self.R <= self.epsilon):
 
 class AnglesConverter(Precondition):
-	...
-	def q2euler(self, q: NonZeroQuaternion, euler_type: EulerType) -> vec3:
-		self.pre_check(q.is_OK)
-		...
+    ...
+    def q2euler(self, q: NonZeroQuaternion, euler_type: EulerType) -> vec3:
+        self.pre_check(q.is_OK)
+        ...
    
 ```
 
@@ -53,12 +52,12 @@ def angle_by_sincos(sin_value: float, cos_value: float) -> float:
 
 ```python
 class NonZeroPoint2(Point2, Preсondition):
-	def __init__(self, x: float, y: float, epsilon = EPSILON):
-		self.pre_check(x**2 + y**2 > epsilon**2)
-		self._x, self._y = x, y
+    def __init__(self, x: float, y: float, epsilon = EPSILON):
+        self.pre_check(x**2 + y**2 > epsilon**2)
+        self._x, self._y = x, y
 
 def angle_by_point(p: NonZeroPoint2) -> float:
-	return math.atan2(p.y, p.x)
+    return math.atan2(p.y, p.x)
 ```
 
 Cлучай `x=y=0`, соответственно можно обнаружить раньше.
@@ -103,21 +102,21 @@ from contextlib import suppress
 class Doc2D(Precondition)    
     @property
     def active_plane3d_offset(self):
-	    ans = None
-	    # 
-		with contextlib.suppress(AttributeError):
-			app = self._app
-		    idoc3d = self.parent_doc3d
-		    idoc3d1 = app.api7.IKompasDocument3D1(idoc3d)
-		    eo = idoc3d1.EditObject
-		    mo = app.api7.IModelObject(eo)
-		    sk = app.api7.ISketch(mo)
-	        plane = sk.Plane
-	        plane3d = app.api7.IPlane3DByOffset(plane)
-	        ans = plane3d.Offset
-	        
-	    self.pre_check(ans != None)
-	    return ans
+        ans = None
+        # 
+        with contextlib.suppress(AttributeError):
+            app = self._app
+            idoc3d = self.parent_doc3d
+            idoc3d1 = app.api7.IKompasDocument3D1(idoc3d)
+            eo = idoc3d1.EditObject
+            mo = app.api7.IModelObject(eo)
+            sk = app.api7.ISketch(mo)
+            plane = sk.Plane
+            plane3d = app.api7.IPlane3DByOffset(plane)
+            ans = plane3d.Offset
+            
+        self.pre_check(ans != None)
+        return ans
 
 ```
 
@@ -132,7 +131,7 @@ try:
     step = float(str_snake_step.get())
     manipulator2d.insert_snake_of_dr_objects(...)
 except:
-	QErrorMessage().showMessage('Неверные числовые значения')
+    QErrorMessage().showMessage('Неверные числовые значения')
 
 ```
 
@@ -140,88 +139,88 @@ except:
 самопальные валидаторы + свой класс формы ввода параметров, которому на вход скармливается валидатор для всего алгоритма
 ```python
 class AlgoParameter(Generic[T]):
-	def validate(self, value: T)
-		...
+    def validate(self, value: T)
+        ...
 
-	@property
-	def description(self) -> str:
-		return self._description
-	
-	@property
-	def name(self) -> str:
-		return self._name
+    @property
+    def description(self) -> str:
+        return self._description
+    
+    @property
+    def name(self) -> str:
+        return self._name
 
 
 class AlgoSpecification(Generic[T], Precondition):
-	...
-	# команда, ставит статус
-	def validate(self, values_dict: dict)
-		...
+    ...
+    # команда, ставит статус
+    def validate(self, values_dict: dict)
+        ...
 
-	@property
-	def name(self) -> str:
-		return self._name
+    @property
+    def name(self) -> str:
+        return self._name
 
-	@property
-	def description(self) -> str:
-		return self._description
+    @property
+    def description(self) -> str:
+        return self._description
 
 class AlgoCommand(AlgoSpecification):
-	def __init__(self, command_func: callable):
-		self._commmand = func
-		
-	def do(self, params_dict: dict):
-		self.validate(params_dict)
-		self.pre_check(self.is_OK)
-		self._command(**params_dict)
-		
+    def __init__(self, command_func: callable):
+        self._commmand = func
+        
+    def do(self, params_dict: dict):
+        self.validate(params_dict)
+        self.pre_check(self.is_OK)
+        self._command(**params_dict)
+        
 class AlgoParemeterFrame(QFrame):
-	def __init__(parent, ok_command: AlgoCommand):
-		super.__init__(parent)
-		self._command = ok_command
-		self._build()
+    def __init__(parent, ok_command: AlgoCommand):
+        super.__init__(parent)
+        self._command = ok_command
+        self._build()
 
-	# тут размещение элементов ввода в соответствии со спекой на алгоритм и задание им валидаторов из спеки
-	def _build(self):
-		...
+    # тут размещение элементов ввода в соответствии со спекой на алгоритм и задание им валидаторов из спеки
+    def _build(self):
+        ...
 
-	# дергаем параметры из полей ввода
-	def self._get_params(self) -> dict:
-		...
+    # дергаем параметры из полей ввода
+    def self._get_params(self) -> dict:
+        ...
 
-	# меняет меточку
-	def set_status(self):
-		...
-	
-	# обработчик нажатия OK
-	def on_OK(self):
-		d = self._get_params()
-		self.pre_check(self.is_OK)
-		self.do(d)
-		self.set_status(self.message)
-	
-	
+    # меняет меточку
+    def set_status(self):
+        ...
+    
+    # обработчик нажатия OK
+    def on_OK(self):
+        d = self._get_params()
+        self.pre_check(self.is_OK)
+        self.do(d)
+        self.set_status(self.message)
+    
+    
 ```
 Соответственно, код самого окна для алгоритма змейки
 ```python
 class SnakeCommand(AlgoCommand)
-	# наследуемся и прописываем валидаторы
-	...
+    # наследуемся и прописываем валидаторы
+    ...
 
 ...
 
 class MainWindow(QMainWindow):
-	...
-	def on_snake(self):
-		snake_command = SnakeCommand()
-		self.showAlgoDialog(snake_command)
+    ...
+    def on_snake(self):
+        snake_command = SnakeCommand()
+        self.showAlgoDialog(snake_command)
 ```
 
 ## Пример 5
 
 **Задача**: выдернуть из Компаса выделенный элемент, найти все связанные с ним примитивы (`connected_chain`) и преобразовать их в собственный класс траекторию `SketchPath2d`.
 
-**Было**. Смешивание логических слоев: чтения из пространства модели, конвертации, алгоритма над своими типами, записи.
+**Было**. Смешивание логических слоев: чтения из пространства модели, конвертации, алгоритма над своими типами, записи -- отсюда проверки "в лоб".
 
 ```python
 class doc2d:    
@@ -237,7 +236,7 @@ class doc2d:
             ans.append(new_elem)
             nb = self.nb_of(ans[-1])
 
-	# тут проверки всех типов вразнобой
+    # тут проверки всех типов вразнобой
     def autoline_to_SketchPath2d(self, linesegment) -> SketchPath2d:
         chain = self.connected_chain(linesegment)
         if chain[0].Type != CURVETYPE_LINESEGMENT2:
@@ -246,8 +245,8 @@ class doc2d:
         constraints = self.nb_constraints_of(chain[0])
         if len(constraints) >= 2:
             return None
-	    ...
-	    # пошел алгоритм, внутри него еще свои проверки
+        ...
+        # пошел алгоритм, внутри него еще свои проверки
 ```
 
 **Стало**:
@@ -257,83 +256,83 @@ class doc2d:
  ```python
 # модельное пространство -> объекты API
 class Doc2D(Precondition):
-	def nb_of(self, drawing_object) -> set:
-		...
-	
-	#тут предусловие что выделен ровно один и условия учета топологии
-	@Precondition.on
-	def get_autoline(self):
-		ans = self.selection([LINESEGMENT2, ARC2])
-		self.pre_check(len(ans) == 1)
-		prev = None
-		nb = self.nb_of(current_seg)
-		while len(nb) == 1:
-			# на случай закольцовки
-			if nb[0] == ans[0]:
-				break
-			ans.extend(nb)
-			prev = nb[0]
-			nb = self.nb_of(current_seg).discard(prev)
-			
-		self._get_autoline_status = GetAutolineStatus.OK
-		self.warning_if(len(nb) > 1, "Fork")
-		return ans
-	
+    def nb_of(self, drawing_object) -> set:
+        ...
+    
+    #тут предусловие что выделен ровно один и условия учета топологии
+    @Precondition.on
+    def get_autoline(self):
+        ans = self.selection([LINESEGMENT2, ARC2])
+        self.pre_check(len(ans) == 1)
+        prev = None
+        nb = self.nb_of(current_seg)
+        while len(nb) == 1:
+            # на случай закольцовки
+            if nb[0] == ans[0]:
+                break
+            ans.extend(nb)
+            prev = nb[0]
+            nb = self.nb_of(current_seg).discard(prev)
+            
+        self._get_autoline_status = GetAutolineStatus.OK
+        self.warning_if(len(nb) > 1, "Fork")
+        return ans
+    
 ```
 
 Конвертер (тут обернуты ошибки конвертации)
 ```python
 # конвертер -- при чтении из модельного простратсва все ошибки остаются здесь. На выходе -- свои классы
 class ksGeomConverter:
-	def curve2geomprimitive(self, curve) -> GeomPrimitive:
-		...
+    def curve2geomprimitive(self, curve) -> GeomPrimitive:
+        ...
 
 # объекты API геометрические <-> геометрия
 class ksGeomConveter:
-	...
-	# вот тут выбор типа геометрии -- от него не уйти
-	def curve2segments(self, curve2d):
-		...
-		if curve2d.curve_type == LINESEGMENT2:
-			...		
-		elif urve2d.curve_type == ARC2:
-			...
-		else:
-			...
-		
-	
+    ...
+    # вот тут выбор типа геометрии -- от него не уйти
+    def curve2segments(self, curve2d):
+        ...
+        if curve2d.curve_type == LINESEGMENT2:
+            ...        
+        elif urve2d.curve_type == ARC2:
+            ...
+        else:
+            ...
+        
+    
 # объекты API рисуемые <-> траектории
 class ksDrawingConverter(ksGeomConverter):
-	...
+    ...
 
-	def do2segment_props(do) -> PathProps:
-		hyperlink_str = drawing_object.GetHyperLinkParam()[0]
-		return SegmentProps().from_str(hyperlink_str)
+    def do2segment_props(do) -> PathProps:
+        hyperlink_str = drawing_object.GetHyperLinkParam()[0]
+        return SegmentProps().from_str(hyperlink_str)
 
-	def do2path_props(do) -> PathProps:
-		hyperlink_str = drawing_object.GetHyperLinkParam()[0]
-		return PathProps().from_str(hyperlink_str)
+    def do2path_props(do) -> PathProps:
+        hyperlink_str = drawing_object.GetHyperLinkParam()[0]
+        return PathProps().from_str(hyperlink_str)
 
-	@Precondition.on
-	def do2tp_segment_list(self, drawing_object) -> list[ToolPathSegment]:
-		seg_props =	self.do2segment_props(do)	
-		self.pre_check(seg_props.is_OK)
-		curve2d = drawing_object.GetCurve2D()
-		segments = self.curve2segments(curve2d)
-		ans = [ToolPathSegment(seg, segment_props) for seg in segments]
-		return ans
-		
-	@Precondition.on
-	def autoline2tp(self, autoline) -> ToolPath:
-		self.pre_check(len(autoline)>0)
-		tp_props = self.do2path_props(autoline[0])
-		self.pre_check(tp_props.is_OK)
-		ans = ToolPath(tp_props)
-		all_segments = sum(map (self.do2tp_segment_list,autoline), start = [])
-		ans.extend(all_segments)
-		self.pre_check(ans.is_OK)
-		return ans
-	
+    @Precondition.on
+    def do2tp_segment_list(self, drawing_object) -> list[ToolPathSegment]:
+        seg_props =    self.do2segment_props(do)    
+        self.pre_check(seg_props.is_OK)
+        curve2d = drawing_object.GetCurve2D()
+        segments = self.curve2segments(curve2d)
+        ans = [ToolPathSegment(seg, segment_props) for seg in segments]
+        return ans
+        
+    @Precondition.on
+    def autoline2tp(self, autoline) -> ToolPath:
+        self.pre_check(len(autoline)>0)
+        tp_props = self.do2path_props(autoline[0])
+        self.pre_check(tp_props.is_OK)
+        ans = ToolPath(tp_props)
+        all_segments = sum(map (self.do2tp_segment_list,autoline), start = [])
+        ans.extend(all_segments)
+        self.pre_check(ans.is_OK)
+        return ans
+    
 ```
 
 Пример использования короткий -- все скрыто под капотом
@@ -342,3 +341,5 @@ autoline = doc2d.get_autoline()
 tool_path = converter.autoline2tp(autoline)
 ```
 
+## Общий вывод
+Спасибо, арсенал полезных приемов рефакторинга пополнился, теперь знаю как увеличить надежность
