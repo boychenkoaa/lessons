@@ -28,7 +28,7 @@ class Dog(Animal):
 class NoneClass(Cat, Dog):
 	pass
 
-none_object = NoneClass(10)
+none_object = NoneClass(10.0)
 none_object.meow()
 none_object.bark()
 print(none_object.weight)
