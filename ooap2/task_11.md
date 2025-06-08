@@ -31,5 +31,5 @@ class NoneClass(Cat, Dog):
 none_object = NoneClass(10)
 none_object.meow()
 none_object.bark()
-print(none_object.wight)
+print(none_object.weight)
 ```
