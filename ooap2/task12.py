@@ -13,7 +13,7 @@ class General:
         if isinstance(other, cls):
             return other
 
-        return MyNone()
+        return Void
 
 
 class Any(General):
@@ -21,6 +21,8 @@ class Any(General):
 
 class MyNone(Any):
     ...
+
+Void = MyNone()
 
 # тестируем
 if __name__ == '__main__':
@@ -35,9 +37,9 @@ if __name__ == '__main__':
     g = General()
     a = Any()
     a = a.try_set(g)
-    assert isinstance(a, MyNone)
+    assert a == Void
 
     # еще одни неприводимые типы
     a = Any()
     a = a.try_set(1)
-    assert isinstance(a, MyNone)
+    assert a == Void
