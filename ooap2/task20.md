@@ -73,7 +73,7 @@ class AVLTree(BSTree[T]):
 
 **Структурное наследование**
 Примеси
-```
+```python
 # примесь для печати в матплотлибе
 class PlotMixin:
     @property
