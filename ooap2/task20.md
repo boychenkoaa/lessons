@@ -1,3 +1,104 @@
+# Исправленное решение
+
+**Вариация**
+- неудачное (но "интуитивно" (с точки зрения геометрии) напрашивающееся) наследование
+- а вообще, нужна композиция либо обобщение класса GeomGraph
+
+```python
+from typing import TypeVar, Generic
+
+# Пример 1: вариация
+class GeomGraph:
+    def find_point(x, y) -> int:
+        ...
+        
+    def get_point(id_: int) -> Point2:
+        ...
+    
+    def add_point(x, y) -> None:
+        ...
+        
+    def remove_point(x, y) -> None:
+        ...
+        
+    def remove_point_by_id(id: int) -> None:
+        ...
+     
+class Polygon(GeomGraph):
+    # вариация типа
+    def add_point(x, y, contour_index, prev_index):
+        '''
+        добавление точки в полигон требует также добавления двух новых ребер, 
+        удаления одного старого
+        и проверки на самопересечения
+        '''
+        ...
+        
+    # вариация функциональная
+    def remove_point(x, y):
+        '''удаление в полигоне требует не просто удаления точки из контейнера
+        но и создания нового ребра между новыми соседями
+        а еще проверки на отсутствие самопересечения
+        '''
+        ...
+
+```
+
+**Конкретизация**
+```python
+T = TypeVar("T")
+class BSTree(Generic[T]):
+    def find(self, key: int) -> T:
+        ...
+        
+    def add(self, key: int, value: T):
+        ...
+        
+    def remove(self, key: int):
+        ...
+        
+class AVLTree(BSTree[T]):
+    def find(self, key: int) -> T:
+        # тут уже конкретные реализации
+        ...
+        
+    def add(self, key: int, value: T):
+        # тут уже конкретные реализации
+        ...
+        
+    def remove(self, key: int):
+        # тут уже конкретные реализации
+        ...
+```
+
+**Структурное наследование**
+Примеси
+```
+# примесь для печати в матплотлибе
+class PlotMixin:
+    @property
+    def segments(self) -> list[Segment2]:
+        raise NotImplementedError()
+          
+    def plot(self, plt, **kwargs):
+        for segment in segments:
+            plt.plot([segment[B][X], segment[E][X]],[segment[B][Y], segment[E], [Y]], **kwagrs)
+
+# абстрактная геометрия
+class Geometry2D:
+    ...
+    @property
+    def segments(self):
+        raise NotImplementedError()
+
+
+# пример
+# plot доступен автоматически
+class ProjectPline2D(Geometry2D, ToMeshMixin, PlotMixin):
+    def segments(self):
+        return list(zip(self.points, self.points[1:]))
+```
+
 # Неверное решение
 Невнимательно прочитал задание, сделал просто словесное описание, сегодня исправлю, доделаю примеры кода
 
