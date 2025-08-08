@@ -8,8 +8,9 @@
     - `Game` -- фасад над
         - `Cells` (игровое поле)
         - `Statistics` (статистика)
-        - основной метод -- `Transform` (состоит из трансформации статистики и преобразования игрового поля)
+        - основной метод -- `Transform` (состоит из  `CellsTransfomration` и `StatisticsTransfomtation`)
           
 - `CellsFabric` --  генератор начального состояния ячеек
-- `GameCommand` -- вычисляет `GameTransformation`
+- `GameCommand` -- вычисляет `GameTransformation` по параметрам хода
+- 
 (фасад над  `CellsTransfomration` и `StatisticsTransfomtation`)
