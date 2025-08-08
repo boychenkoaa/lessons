@@ -11,6 +11,6 @@
         - основной метод -- `Transform` (состоит из  `CellsTransfomration` и `StatisticsTransfomtation`)
           
 - `CellsFabric` --  генератор начального состояния ячеек
-- `GameCommand` -- вычисляет `GameTransformation` по параметрам хода
+- `GameTransfomationCalculator` -- вычисляет `GameTransformation` по параметрам хода
 - 
 (фасад над  `CellsTransfomration` и `StatisticsTransfomtation`)
