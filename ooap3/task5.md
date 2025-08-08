@@ -12,5 +12,5 @@
           
 - `CellsFabric` --  генератор начального состояния ячеек
 - `GameTransfomationCalculator` -- вычисляет `GameTransformation` по параметрам хода
-- 
+- `Command` -- описание желаемого действия
 (фасад над  `CellsTransfomration` и `StatisticsTransfomtation`)
