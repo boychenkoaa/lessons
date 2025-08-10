@@ -9,8 +9,8 @@
         - `Cells` (игровое поле)
         - `Statistics` (статистика)
         - основной метод -- `Transform` (состоит из  `CellsTransfomration` и `StatisticsTransfomtation`)
-          
+
 - `CellsFabric` --  генератор начального состояния ячеек
-- `GameTransfomationCalculator` -- вычисляет `GameTransformation` по параметрам хода
+- `MoveFabric` -- вычисляет `GameTransformation` по параметрам хода
 - `Command` -- описание желаемого действия
 (фасад над  `CellsTransfomration` и `StatisticsTransfomtation`)
