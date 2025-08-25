@@ -36,7 +36,6 @@ COMBINATION_MASKS =
   
 *запросы*
 - value -> int
-
 - RowInt = BoundedInt(0, BOARD_HEIGHT)
 - ColumnInt = BoundedInt(0, BOARD_WIDTH)
 - NonNegativeInt = BoundedInt(0, +inf)
@@ -87,11 +86,13 @@ COMBINATION_MASKS =
 - add(other: BonusChest)
 
 **АТД Statistics**
+
 *запросы*
 - scores -> int
 - bonus_used_count(bonus: Bonus) -> int
 - combinations_used_count(combination: Combination) -> int
 - repr()
+- 
 *команды*
 - reset()
 - add(statistics: Statistics)
@@ -106,7 +107,7 @@ COMBINATION_MASKS =
 - last_step_status -> Status
 - possbile_swap_move() 
 - possible_bonus_move()
-- 
+
 *команды*
 - reset()
 - print()
