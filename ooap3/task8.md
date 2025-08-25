@@ -100,11 +100,13 @@ COMBINATION_MASKS =
 
 **АТД GameSession**
 '''фасад над доской, сундуком и статистикой'''
+
 *запросы*
 - is_print_on -> bool
 - last_step_status -> Status
 - possbile_swap_move() 
 - possible_bonus_move()
+- 
 *команды*
 - reset()
 - print()
