@@ -73,6 +73,7 @@ COMBINATION_MASKS =
 - duplicate(rc: RC,rc_set: RCSet)
 - Shuffle
 - Drop
+- Reset
 
 **АТД BonusChest**
 
