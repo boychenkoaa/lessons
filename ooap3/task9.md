@@ -1,7 +1,7 @@
 ### Схемы создания объектов
 
 Особенных схем нет, создание объектов только через конструкторы. нет фабрик, фабричных методов и т д.
-
+```
 PositiveInt = BoundedInt(0, +inf)
 cells = Cells (BOARD_WIDTH , BOARD_HEIGHT)
 
@@ -12,6 +12,8 @@ start_statistics = Statistics(start_scores = 0)
 game_session = GameSession()
 game = Game()
 game_ui_adapter = GameUIAdapter()
+```
+
 ## Типовые сценарии
 шаблон
 ```Gherkin
