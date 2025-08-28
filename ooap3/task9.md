@@ -1,16 +1,21 @@
 ### Схемы создания объектов
 
 Особенных схем нет, создание объектов только через конструкторы. нет фабрик, фабричных методов и т д.
-```
+```python
+# Все они вложены друг в друга
 PositiveInt = BoundedInt(0, +inf)
+
 cells = Cells (BOARD_WIDTH , BOARD_HEIGHT)
 
 bonus_chest = BonusChest()
 bonus_chest.reset_random()
 
 start_statistics = Statistics(start_scores = 0)
+
 game_session = GameSession()
+
 game = Game()
+
 game_ui_adapter = GameUIAdapter()
 ```
 
