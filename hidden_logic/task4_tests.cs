@@ -1,21 +1,5 @@
-namespace Task4.Tests;
+namespace Example1.Tests;
 using Xunit;
-
-public class Task4Test
-{
-    [Theory]
-    [InlineData(41.0, 5.0)]
-    [InlineData(50.0, 10.0)]
-    [InlineData(230.0, 110.0)]
-
-    public void test_to_celsius(double c, double expected)
-    {
-        Task4 task4 = new();
-        double f = task4.ToCelsius(c);
-        Assert.Equal(f, expected);
-    }
-
-}
 
 public class Task5Test
 {
@@ -27,7 +11,7 @@ public class Task5Test
 
     public void test_calculate_average(int[] numbers, double expected)
     {
-        AverageCalculator calculator = new();
+        T5.AverageCalculator calculator = new();
         double average = calculator.calculateAverage(numbers);
         Assert.Equal(average, expected);
     }
