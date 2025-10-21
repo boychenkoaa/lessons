@@ -1,5 +1,4 @@
-
-namespace T5
+namespace T4
 {
      public class AverageCalculator 
     {
