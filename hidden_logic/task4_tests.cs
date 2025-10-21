@@ -1,7 +1,7 @@
 namespace Example1.Tests;
 using Xunit;
 
-public class Task5Test
+public class Task4Test
 {
     [Theory]
     [InlineData(new int[] { 1, 2, 3, 4, 5 }, 3.0)]
