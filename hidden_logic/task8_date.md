@@ -22,7 +22,7 @@ DateTime dateValue;
 isCorrectDate = DateTime.TryParseExact(
     dateString, 
     dateformat, 
-    enUS, 
+    culture, 
     dt_style, 
     out dateValue);
 
