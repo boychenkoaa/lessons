@@ -117,7 +117,7 @@ public class Polyline2D
     public Polyline2D Distinct()
     {
         var seen = new HashSet<(float, float)>();
-        new_points = Points.Where(p => seen.Add((p.x, p.y)))
+        var new_points = Points.Where(p => seen.Add((p.x, p.y)))
               .Select(Clone)
               .ToArray();
         var result = Polyline2D(new_points);
@@ -140,12 +140,10 @@ public class Polyline2D
     public Polyline2D Concat(Polyline2D other)
     {
         ArgumentNullException.ThrowIfNull(other);
-
-        var result = new Polyline2D(
-            CloneAll(Points)
-                .Concat(CloneAll(other.Points))
-                .ToArray()
-        );
+        var new_points = CloneAll(Points)
+            .Concat(CloneAll(other.Points))
+            .ToArray();
+        var result = new Polyline2D(new_points);
         return result;
     }
 
