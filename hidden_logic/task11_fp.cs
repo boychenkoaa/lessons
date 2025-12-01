@@ -41,14 +41,12 @@ public class Polyline2D
 
         if (index < 0 || index > Points.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
-
-        result = Polyline2D(
-            Points.Take(index)
-                  .Select(Clone)
-                  .Append(Clone(newPoint))
-                  .Concat(Points.Skip(index).Select(Clone))
-                  .ToArray()
-        );
+        var new_points = Points.Take(index)
+              .Select(Clone)
+              .Append(Clone(newPoint))
+              .Concat(Points.Skip(index).Select(Clone))
+              .ToArray();
+        var result = Polyline2D(new_points);
         return result;
     }
 
@@ -62,12 +60,10 @@ public class Polyline2D
 
         if (index < 0 || index >= Points.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
-
-        result = new Polyline2D(
-            Points.Where((_, i) => i != index)
-                  .Select(Clone)
-                  .ToArray()
-        );
+        var new_points = Points.Where((_, i) => i != index)
+            .Select(Clone)
+            .ToArray();
+        var result = new Polyline2D(new_points);
         return result;
     }
 
@@ -76,11 +72,8 @@ public class Polyline2D
     public Polyline2D Prepend(Point2D newPoint)
     {
         ArgumentNullException.ThrowIfNull(newPoint);
-        result = new Polyline2D(
-            new[] { Clone(newPoint) }
-                .Concat(CloneAll(Points))
-                .ToArray()
-        );
+        var new_points = new[] { Clone(newPoint) }.Concat(CloneAll(Points)).ToArray();
+        var result = new Polyline2D(new_points);
         return result;
     }
 
@@ -89,7 +82,10 @@ public class Polyline2D
     public Polyline2D Append(Point2D newPoint)
     {
         ArgumentNullException.ThrowIfNull(newPoint);
-        result = new Polyline2D(CloneAll(Points).Append(Clone(newPoint)).ToArray());
+        var new_points = CloneAll(Points)
+            .Append(Clone(newPoint))
+            .ToArray();
+        var result = new Polyline2D(new_points);
         return result;
     }
 
@@ -97,47 +93,47 @@ public class Polyline2D
     public Polyline2D Filter(Func<Point2D, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
-
-        return new Polyline2D(
-            Points.Where(predicate)
-                  .Select(Clone)
-                  .ToArray()
-        );
+        var new_points = Points.Where(predicate)
+              .Select(Clone)
+              .ToArray();
+        var result = Polyline2D(new_points);
+        return result;
     }
 
     // длина
     public float TotalLength()
     {
         if (Points.Length < 2) return 0f;
-
-        return Points.Zip(Points.Skip(1), (a, b) =>
+        var result = Points.Zip(Points.Skip(1), (a, b) =>
             MathF.Sqrt(
                 MathF.Pow(b.x - a.x, 2) +
                 MathF.Pow(b.y - a.y, 2)
             )
         ).Sum();
+        return result;
     }
 
     // удаление дубликатов (сравниваем по значениям)
     public Polyline2D Distinct()
     {
         var seen = new HashSet<(float, float)>();
-        return new Polyline2D(
-            Points.Where(p => seen.Add((p.x, p.y)))
-                  .Select(Clone)
-                  .ToArray()
-        );
+        new_points = Points.Where(p => seen.Add((p.x, p.y)))
+              .Select(Clone)
+              .ToArray();
+        var result = Polyline2D(new_points);
+        return result;
     }
 
     // реверс
     // без пред и постусловий
     public Polyline2D Reverse()
     {
-        return new Polyline2D(
+        var result = Polyline2D(
             Points.Reverse()
                   .Select(Clone)
                   .ToArray()
         );
+        return result;
     }
 
     // конкатенация
@@ -145,11 +141,12 @@ public class Polyline2D
     {
         ArgumentNullException.ThrowIfNull(other);
 
-        return new Polyline2D(
+        var result = new Polyline2D(
             CloneAll(Points)
                 .Concat(CloneAll(other.Points))
                 .ToArray()
         );
+        return result;
     }
 
 
