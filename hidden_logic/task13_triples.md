@@ -41,14 +41,14 @@ MaxAbs(a,b)
 n >= 0, m < 0, n > -m: n
 Abs(n) = n, в силу n >= 0
 Abs(m) = -m, в силу m < 0
-Max(Abs(n), Abs(m)) = n в силу того что n > -m
+Откуда MaxAbs(m, n) = Max(Abs(n), Abs(m)) = Max(n, -m) = n в силу того что n > -m
 
 2. Рассмотрим случай
 m < n <= 0: -m
 Abs(m) = -m, в силу m < 0
 Abs(n) = -n, в силу n <= 0
 m < n => -m > -n
-Откуда Max(Abs(n), Abs(n)) = -m
+Откуда MaxAbs(m, n) = Max(Abs(m), Abs(n)) = Max(-m, -n) = -m
 
 Остальные случаи доказываются аналогично
 ```
