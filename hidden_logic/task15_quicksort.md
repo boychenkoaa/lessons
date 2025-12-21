@@ -68,9 +68,9 @@ void quicksort(arrst<int> arr)
 I: ∀k ∈ [left, i-1]: arr[k] < pivot ∧ ∀k ∈ [i, j-1]: arr[k] ≥ pivot
 ```
 **База**. 
-- Перед циклом: i = left, j = left
-- [left, i-1] = [left, left-1] = ∅
-- [i, j-1] = [left, left-1] = ∅
+- Перед циклом: `i = left, j = left`
+- `[left, i-1] = [left, left-1] = ∅`
+- `[i, j-1] = [left, left-1] = ∅`
 
 "пустая истина"
 
