@@ -11,6 +11,11 @@ namespace AlgorithmsDataStructures
             var list = new LinkedList();
             list.AddInTail(new Node(10));
             Assert.Equal(1, list.Count());
+            Assert.Equal(10, list.tail.value);
+            list.AddInTail(new Node(20));
+            Assert.Equal(2, list.Count());
+            Assert.Equal(10, list.head.value);
+            Assert.Equal(20, list.tail.value);
         }
 
         [Fact]
@@ -19,6 +24,12 @@ namespace AlgorithmsDataStructures
             var list = new LinkedList();
             list.AddInHead(new Node(10));
             Assert.Equal(1, list.Count());
+            Assert.Equal(10, list.head.value);
+            Assert.Equal(10, list.tail.value);
+            list.AddInHead(new Node(20));
+            Assert.Equal(2, list.Count());
+            Assert.Equal(20, list.head.value);
+            Assert.Equal(10, list.tail.value);
         }
 
         [Fact]
@@ -136,10 +147,26 @@ namespace AlgorithmsDataStructures
         public void TestInsertAfter()
         {
             var list = new LinkedList();
-            list.AddInTail(new Node(10));
+            list.InsertAfter(null, new Node(10));
+
+            // проверяем 10
+            Assert.Equal(1, list.Count());
+            Assert.Equal(10, list.head.value);
+            Assert.Equal(10, list.tail.value);
             var node = list.Find(10);
+
+            // проверяем 10 20
             list.InsertAfter(node, new Node(20));
             Assert.Equal(2, list.Count());
+            Assert.Equal(10, list.head.value);
+            Assert.Equal(20, list.tail.value);
+            node = list.Find(20);
+            list.InsertAfter(node, new Node(30));
+
+            // проверяем 10 20 30
+            Assert.Equal(3, list.Count());
+            Assert.Equal(10, list.head.value);
+            Assert.Equal(30, list.tail.value);
         }
 
     }
