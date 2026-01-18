@@ -1,11 +1,12 @@
 namespace AlgorithmsDataStructures
 {
     /*
-    рефлексия: пока не очень понял -- эталонные решения будут в следующем уроке?
+        место для рефлексии
+        (видимо, в следующем уроке будут эталонные решения)
     */
     public class LinkedListExt
     {
-        public static LinkedList SumValues(LinkedList list1, LinkedList list2)
+        public static LinkedList? SumValues(LinkedList list1, LinkedList list2)
         {
             if (list1.Count() != list2.Count())
             {

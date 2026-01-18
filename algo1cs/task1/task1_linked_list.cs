@@ -114,19 +114,31 @@ namespace AlgorithmsDataStructures
 
         public void RemoveAll(int _value)
         {
-            if (IsEmpty()) return;
-
-            while (head.value == _value)
+            
+            while (head != null && head.value == _value)
             {
                 head = head.next;
             }
+
+            // если пустой или состоит только из удаляемых элементов
+            if (head == null)
+            {
+                Clear();
+                return;
+            }
+
             Node prev = head;
             Node node = head.next;
+            
             while (node != null)
             {
                 if (node.value == _value)
                 {
                     prev.next = node.next;
+                    if (node == tail)
+                    {
+                        tail = prev;
+                    }
                 }
                 else
                 {
