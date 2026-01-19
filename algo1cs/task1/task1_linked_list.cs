@@ -106,6 +106,7 @@ namespace AlgorithmsDataStructures
                     prev.next = node.next;
                     return true;
                 }
+                prev = node;
                 node = node.next;
             }
 
@@ -114,7 +115,7 @@ namespace AlgorithmsDataStructures
 
         public void RemoveAll(int _value)
         {
-            
+
             while (head != null && head.value == _value)
             {
                 head = head.next;
@@ -129,7 +130,7 @@ namespace AlgorithmsDataStructures
 
             Node prev = head;
             Node node = head.next;
-            
+
             while (node != null)
             {
                 if (node.value == _value)
@@ -208,7 +209,28 @@ namespace AlgorithmsDataStructures
             }
 
         }
+
+        public void FromArray(int[] _list)
+        {
+            foreach (int _value in _list)
+            {
+                AddInTail(new Node(_value));
+            }
+        }
+
+        public int[] ToArray()
+        {
+            int count = Count();
+            int[] ans = new int[count];
+            int i = 0;
+            Node node = head;
+            while (node != null)
+            {
+                ans[i] = node.value;
+                i++;
+                node = node.next;
+            }
+            return ans;
+        }
     } // LinkedList
-
-
 }

@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://5wkmll5i6vx4"]
-
-[ext_resource type="PackedScene" uid="uid://dce0hkbpxk0bf" path="res://knife_shooter.tscn" id="1_186yu"]
-
-[node name="Game" type="Node2D"]
-
-[node name="KnifeShooter" parent="." instance=ExtResource("1_186yu")]
