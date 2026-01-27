@@ -1,12 +1,16 @@
 namespace AlgorithmsDataStructures
 {
 
-    public class Node
+    public class NodeExt
     {
-        public Node next = null, prev = null;
-        public Node(int _value)
+        public int value;
+        public NodeExt next, prev;
+
+        public NodeExt(int _value)
         {
             value = _value;
+            next = null;
+            prev = null;
         }
     }
 
@@ -19,12 +23,12 @@ namespace AlgorithmsDataStructures
         }
 
 
-        public Node? Head
+        public NodeExt? Head
         {
             get { return IsEmpty ? null : Dummy.next; }
         }
 
-        public Node? Tail
+        public NodeExt? Tail
         {
             get { return IsEmpty ? null : Dummy.next; }
         }
@@ -36,11 +40,11 @@ namespace AlgorithmsDataStructures
             get { return Dummy.next == Dummy; }
         }
 
-        public Node Dummy { get; } = Node(0);
+        public NodeExt Dummy { get; } = new NodeExt(0);
 
-        private void InsertAfter(Node nodeAfter, int value)
+        private void InsertAfter(NodeExt nodeAfter, int value)
         {
-            Node newNode = new Node(value);
+            NodeExt newNode = new NodeExt(value);
             newNode.next = nodeAfter.next;
             newNode.prev = nodeAfter.prev;
             nodeAfter.next.prev = newNode;
@@ -50,7 +54,7 @@ namespace AlgorithmsDataStructures
 
         public void InsertToHead(int value)
         {
-            InsertAfter(Head, value);
+            InsertAfter(Dummy, value);
         }
 
         public void InsertToTail(int value)
@@ -69,8 +73,8 @@ namespace AlgorithmsDataStructures
         */
         public bool HasCycles()
         {
-            HashSet<Node> visited = new HashSet<Node> { };
-            Node node = Dummy.next;
+            HashSet<NodeExt> visited = new HashSet<NodeExt> { };
+            NodeExt node = Dummy.next;
             while ((node != Dummy) && (!visited.Contains(node)))
             {
                 visited.Add(node);
@@ -87,17 +91,15 @@ namespace AlgorithmsDataStructures
 
         public void reverse()
         {
-            Node tmp = Dummy.prev;
-            Dummy.prev = Dummy.next;
-            Dummy.next = tmp;
-            node = Dummy.prev;
-            Node node = Dummy.next;
+            // dummy меняем местами next <-> prev
+            (Dummy.prev, Dummy.next) = (Dummy.prev, Dummy.next);
+            NodeExt node = Dummy.prev; // бывший Next
+
+            // аналогично поступаем для всех нод
             while (node != Dummy)
             {
-                tmp = node.prev;
-                node.prev = node.next;
-                node.next = tmp;
-                node = node.next;
+                (node.prev, node.next) = (node.next, node.prev);
+                node = node.prev;
             }
         }
 
@@ -107,8 +109,8 @@ namespace AlgorithmsDataStructures
             if (IsEmpty)
                 return;
 
-            Node node;
-            Node last = Tail;
+            NodeExt node;
+            NodeExt last = Tail;
             while (last != Head)
             {
                 node = Head;
@@ -119,7 +121,6 @@ namespace AlgorithmsDataStructures
                 }
                 last = last.prev;
             }
-
         }
 
 
@@ -127,16 +128,27 @@ namespace AlgorithmsDataStructures
         {
             foreach (int _value in _list)
             {
-                AddInTail(new Node(_value));
+                InsertToTail(_value);
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                NodeExt node = Head;
+                int ans;
+                for (ans = 0; node != null; ans++)
+                    node = node.next;
+                return ans;
             }
         }
 
         public int[] ToArray()
         {
-            int count = Count();
-            int[] ans = new int[count];
+            int[] ans = new int[Count];
             int i;
-            Node node = head;
+            NodeExt node = Head;
             for (i = 0; node != null; i++)
             {
                 ans[i] = node.value;
@@ -144,41 +156,52 @@ namespace AlgorithmsDataStructures
             }
             return ans;
         }
-    };
 
-    /*
-    слияние списков
-    сортируем списки, далее двигаем курсоры по обоим, 
-    добавляя меньший элемень в конец списка-результата
-    далее дописываем остаток более длинного также в конец
-    */
-    public void merge(LinkedList3ext list1, LinkedList3ext list2)
-    {
-        list1.BubbleSort();
-        list2.BubbleSort();
-        LinkedList3ext ans = new LinkedList3ext();
-        Node node1 = list1.Head;
-        Node node2 = list2.Head;
-        while ((node1 != list1.Dummy) && (node2 != list2.Dummy))
+        /*
+        слияние списков
+        сортируем списки, далее двигаем курсоры по обоим,
+        добавляя меньший элемень в конец списка-результата
+        далее дописываем остаток более длинного также в конец.
+        */
+        public LinkedList3ext Merge(LinkedList3ext other)
         {
-            if (node1.value < node2.value)
+            if (IsEmpty)
+                return other;
+
+            if (other.IsEmpty)
+                return this;
+
+            BubbleSort();
+            other.BubbleSort();
+            LinkedList3ext ans = new LinkedList3ext();
+            NodeExt node = Head;
+            NodeExt other_node = other.Head;
+
+            // основа: двигаем курсор, у которого значение меньше,
+            // добавляя это значение в итоговый список
+            while ((node != Dummy) && (other_node != other.Dummy))
             {
-                ans.InsertToTail(node1.value);
-                node1 = node1.next;
+                if (node.value < other_node.value)
+                {
+                    ans.InsertToTail(node.value);
+                    node = node.next;
+                }
+                else
+                {
+                    ans.InsertToTail(other_node.value);
+                    other_node = other_node.next;
+                }
             }
-            else
+
+            // добавляем "висячий" хвост
+            NodeExt dummy;
+            (node, dummy) = (node == Dummy) ? (other_node, other.Dummy) : (node, Dummy);
+            while (node != dummy)
             {
-                ans.InsertToTail(node2.value);
-                node2 = node2.next;
+                ans.InsertToTail(node.value);
+                node = node.next;
             }
-        }
-        Node = (node1 == list1.Dummy) ? node2 : node1;
-        Node dum = (node1 == list1.Dummy) ? list2.Dummy : list1.Dummy;
-        while (node != dum)
-        {
-            ans.InsertToTail(node.value);
-            node = node.next;
+            return ans;
         }
     }
-
 }

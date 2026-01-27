@@ -130,6 +130,7 @@
             list.FromArray(src);
             list.RemoveAll(value);
             Assert.True(target.SequenceEqual(list.ToArray()));
+            Assert.True(target.SequenceEqual(list.ToArray()));
         }
 
         [Theory]
