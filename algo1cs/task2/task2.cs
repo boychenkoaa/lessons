@@ -136,6 +136,13 @@ namespace AlgorithmsDataStructures
         // команда: удаление из головы (ничего не делает, если пуст)
         public void RemoveFromHead()
         {
+            if (IsEmpty())
+                return;
+            if (head == tail)
+            {   
+                Clear();
+                return;
+            }
             head = head?.next;
             head?.prev = null;
         }
@@ -143,8 +150,16 @@ namespace AlgorithmsDataStructures
         // команда: удаление из хвоста (ничего не делает, если пуст)
         public void RemoveFromTail()
         {
-            tail = tail?.prev;
-            tail?.next = null;
+            if (IsEmpty())
+                return;
+            if (head == tail)
+            {   
+                Clear();
+                return;
+            }
+            
+            tail = tail.prev;
+            tail.next = null;
         }
 
         // команда: удаление ноды
