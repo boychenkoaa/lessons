@@ -142,12 +142,12 @@ namespace AlgorithmsDataStructures
             if (IsEmpty())
                 return;
             if (head == tail)
-            {   
+            {
                 Clear();
                 return;
             }
-            head = head?.next;
-            head?.prev = null;
+            head = head.next;
+            head.prev = null;
         }
 
         // команда: удаление из хвоста (ничего не делает, если пуст)
@@ -156,11 +156,11 @@ namespace AlgorithmsDataStructures
             if (IsEmpty())
                 return;
             if (head == tail)
-            {   
+            {
                 Clear();
                 return;
             }
-            
+
             tail = tail.prev;
             tail.next = null;
         }
@@ -168,8 +168,10 @@ namespace AlgorithmsDataStructures
         // команда: удаление ноды
         public static void RemoveNode(Node _node)
         {
-            _node.next?.prev = _node.prev;
-            _node.prev?.next = _node.next;
+            if (_node.next != null)
+                _node.next.prev = _node.prev;
+            if (_node.prev != null)
+                _node.prev.next = _node.next;
         }
 
 
@@ -190,11 +192,12 @@ namespace AlgorithmsDataStructures
             Node node = head;
             while (node != null)
             {
+                Node nextNode = node.next;
                 if (node.value == _value)
                 {
                     RemoveNode(node);
                 }
-                node = node.next;
+                node = nextNode;
             }
         }
 
