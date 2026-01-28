@@ -1,4 +1,8 @@
-﻿namespace AlgorithmsDataStructures
+using Xunit;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace AlgorithmsDataStructures
 {
     public class LinkedList2Tests
     {
@@ -120,6 +124,7 @@
         [InlineData(new int[] { 10, 10, 10, 10, 10 }, 10, new int[] { })]
         [InlineData(new int[] { 10, 20, 30 }, 10, new int[] { 20, 30 })]
         [InlineData(new int[] { 10, 10, 20, 10, 30, 10, 10 }, 10, new int[] { 20, 30 })]
+        [InlineData(new int[] { 20, 10, 30 }, 10, new int[] { 20, 30 })]
         [InlineData(new int[] { 20, 30, 10, 10, 10 }, 10, new int[] { 20, 30 })]
         [InlineData(new int[] { 10, 10, 10, 10, 20, 30 }, 10, new int[] { 20, 30 })]
         [InlineData(new int[] { 20, 30, 20, 30, 20, 30 }, 10, new int[] { 20, 30, 20, 30, 20, 30 })]
@@ -129,7 +134,6 @@
             LinkedList2 list = new LinkedList2();
             list.FromArray(src);
             list.RemoveAll(value);
-            Assert.True(target.SequenceEqual(list.ToArray()));
             Assert.True(target.SequenceEqual(list.ToArray()));
         }
 
