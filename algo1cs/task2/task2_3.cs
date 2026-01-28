@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace AlgorithmsDataStructures
 {
 
@@ -26,14 +27,14 @@ namespace AlgorithmsDataStructures
         }
 
 
-        public NodeExt? Head
+        public NodeExt Head
         {
             get { return IsEmpty ? null : Dummy.next; }
         }
 
-        public NodeExt? Tail
+        public NodeExt Tail
         {
-            get { return IsEmpty ? null : Dummy.next; }
+            get { return IsEmpty ? null : Dummy.prev; }
         }
 
         // запрос -- пустой ли список
@@ -49,7 +50,7 @@ namespace AlgorithmsDataStructures
         {
             NodeExt newNode = new NodeExt(value);
             newNode.next = nodeAfter.next;
-            newNode.prev = nodeAfter.prev;
+            newNode.prev = nodeAfter;
             nodeAfter.next.prev = newNode;
             nodeAfter.next = newNode;
         }
@@ -62,7 +63,7 @@ namespace AlgorithmsDataStructures
 
         public void InsertToTail(int value)
         {
-            InsertAfter(Tail, value);
+            InsertAfter(Dummy.prev, value);
         }
 
         /*
@@ -94,8 +95,11 @@ namespace AlgorithmsDataStructures
 
         public void reverse()
         {
+            if (IsEmpty)
+                return;
+
             // dummy меняем местами next <-> prev
-            (Dummy.prev, Dummy.next) = (Dummy.prev, Dummy.next);
+            (Dummy.next, Dummy.prev) = (Dummy.prev, Dummy.next);
             NodeExt node = Dummy.prev; // бывший Next
 
             // аналогично поступаем для всех нод
@@ -106,20 +110,26 @@ namespace AlgorithmsDataStructures
             }
         }
 
-        // сортировка
+        /*
+        сортировка
+        сделано на коленке, не брать в прод!
+        меняет исходные списки
+        */
         public void BubbleSort()
         {
             if (IsEmpty)
                 return;
 
-            NodeExt node;
             NodeExt last = Tail;
             while (last != Head)
             {
-                node = Head;
-                while ((node != last) && (node.value > node.next.value))
+                NodeExt node = Head;
+                while (node != last)
                 {
-                    (node.value, node.next.value) = (node.next.value, node.value);
+                    if (node.value > node.next.value)
+                    {
+                        (node.value, node.next.value) = (node.next.value, node.value);
+                    }
                     node = node.next;
                 }
                 last = last.prev;
@@ -139,9 +149,12 @@ namespace AlgorithmsDataStructures
         {
             get
             {
+                if (IsEmpty)
+                    return 0;
+
                 NodeExt node = Head;
                 int ans;
-                for (ans = 0; node != null; ans++)
+                for (ans = 0; node != Dummy; ans++)
                     node = node.next;
                 return ans;
             }
@@ -149,10 +162,13 @@ namespace AlgorithmsDataStructures
 
         public int[] ToArray()
         {
+            if (IsEmpty)
+                return new int[] { };
+
             int[] ans = new int[Count];
             int i;
             NodeExt node = Head;
-            for (i = 0; node != null; i++)
+            for (i = 0; node != Dummy; i++)
             {
                 ans[i] = node.value;
                 node = node.next;
