@@ -4,9 +4,6 @@ using Xunit;
 
 namespace AlgorithmsDataStructures
 {
-
-
-
     public class UnitTest1 : IDisposable
     {
         /*
@@ -56,14 +53,18 @@ namespace AlgorithmsDataStructures
         public static TheoryData<int[], int> TheoryDataInsert()
         {
             var data = new TheoryData<int[], int>();
+            data.Add(new int[] { }, 0);
             data.Add(new int[] { 1, 2, 3 }, 0);
             data.Add(new int[] { 1, 2, 3 }, 1);
             data.Add(new int[] { 1, 2, 3 }, 2);
+            data.Add(new int[] { 1, 2, 3 }, 3);
             data.Add(Enumerable.Range(1, 100).ToArray(), 0);
             data.Add(Enumerable.Range(1, 100).ToArray(), 1);
             data.Add(Enumerable.Range(1, 100).ToArray(), 99);
+            data.Add(Enumerable.Range(1, 100).ToArray(), 100);
             data.Add(Enumerable.Range(1, 32).ToArray(), 0); // будет нужна реаллокация
-            data.Add(Enumerable.Range(1, 32).ToArray(), 30); //  будет нужна реаллокация   
+            data.Add(Enumerable.Range(1, 32).ToArray(), 30); //  будет нужна реаллокация
+            data.Add(Enumerable.Range(1, 32).ToArray(), 31); //  будет нужна реаллокация
             return data;
         }
 
@@ -77,7 +78,7 @@ namespace AlgorithmsDataStructures
             int old_capacity = dyn_arr.capacity;
             dyn_arr.Insert(999, index);
             Assert.Equal(999, dyn_arr.GetItem(index));
-            Assert.Equal(old_count, dyn_arr.count - 1);
+            Assert.Equal(old_count + 1, dyn_arr.count);
             Assert.True(old_capacity == dyn_arr.capacity || old_capacity * 2 == dyn_arr.capacity);
         }
 

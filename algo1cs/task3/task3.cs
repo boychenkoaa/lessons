@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AlgorithmsDataStructures
 {
-
     public class DynArray<T>
     {
         public T[] array;
@@ -24,9 +23,9 @@ namespace AlgorithmsDataStructures
             {
                 throw new IndexOutOfRangeException();
             }
-            
+
             T[] new_array = new T[new_capacity];
-            
+
             for (int i = 0; i < count; i++)
             {
                 new_array[i] = array[i];
@@ -110,7 +109,11 @@ namespace AlgorithmsDataStructures
         // добавление элемента на место index
         public void Insert(T itm, int index)
         {
-
+            if (index == count)
+            {
+                Append(itm);
+                return;
+            }
             index = get_safe_index(index);
             check_count_and_reallocate();
             // сдвиг хвоста массива на 1 вправо
