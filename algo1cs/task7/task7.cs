@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.Arm;
 
 namespace AlgorithmsDataStructures
 {
@@ -33,10 +34,22 @@ namespace AlgorithmsDataStructures
         public int Compare(T v1, T v2)
         {
             int result = 0;
-            string s1 = v1.ToString().Trim();
-            string s2 = v2.ToString().Trim();
-            result = s1.CompareTo(s2);
-
+            if(typeof(T) == typeof(String))
+            {
+                String s1 = v1.ToString().Trim();
+                String s2 = v2.ToString().Trim();
+                result = s1.CompareTo(s2);
+            }
+            else 
+            {
+                result = Comparer<T>.Default.Compare(v1, v2);
+                // универсальное сравнение
+            }
+            if (result > 0)
+                result = 1;
+            if (result < 0)
+                result = -1;
+            
             return result;
             // -1 если v1 < v2
             // 0 если v1 == v2
@@ -56,7 +69,7 @@ namespace AlgorithmsDataStructures
         }
 
         // команда, вставка перед узлом
-        private void AddBefore(Node<T> node, Node<T> node_before)
+        private static void AddBefore(Node<T> node, Node<T> node_before)
         {
             node.next = node_before;
             node.prev = node_before.prev;
@@ -78,9 +91,12 @@ namespace AlgorithmsDataStructures
             // автоматическая вставка value 
             // в нужную позицию
             if (IsEmpty)
+            {
                 AddToEmpty(value);
+                return;
+            }
 
-            Node<T> new_node = new Node<T>(value);
+            Node<T> new_node = new(value);
 
             // кс: если больше всех
             if (Ge(new_node, tail))
