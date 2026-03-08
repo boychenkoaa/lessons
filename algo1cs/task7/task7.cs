@@ -69,12 +69,31 @@ namespace AlgorithmsDataStructures
         }
 
         // команда, вставка перед узлом
-        private static void AddBefore(Node<T> node, Node<T> node_before)
+        // node_before == null -- вставка в хвост
+        private void AddBefore(Node<T> node, Node<T> node_before)
         {
+            // вставка в хвост
+            if (node_before is null)
+            {
+                tail.next = node;
+                node.prev = tail;
+                tail = node;
+                return;
+            }
+
+            // вставка в голову
+            if (node_before == head)
+            {
+                node.next = head;
+                head.prev = node;
+                head = node;
+                return;
+            }
+
+            // вставка в середину
             node.next = node_before;
             node.prev = node_before.prev;
-            if (node.prev is not null)
-                node.prev.next = node;
+            node_before.prev.next = node;
             node_before.prev = node;
         }
 
@@ -83,6 +102,7 @@ namespace AlgorithmsDataStructures
         private int CompareNodes(Node<T> node1, Node<T> node2) => _ascending ? Compare(node1.value, node2.value) : -(Compare(node1.value, node2.value));
         private bool Le(Node<T> node1, Node<T> node2) => CompareNodes(node1, node2) == -1;
         private bool Ge(Node<T> node1, Node<T> node2) => CompareNodes(node1, node2) == 1;
+
         private bool Eq(Node<T> node1, Node<T> node2) => CompareNodes(node1, node2) == 0;
         private bool EqVal(Node<T> node, T value) => Compare(node.value, value) == 0;
 
@@ -98,27 +118,12 @@ namespace AlgorithmsDataStructures
 
             Node<T> new_node = new(value);
 
-            // кс: если больше всех
-            if (Ge(new_node, tail))
-            {
-                tail.next = new_node;
-                new_node.prev = tail;
-                tail = new_node;
-                return;
-            }
-            // кс: если меньше всех
-            if (Le(new_node, head))
-            {
-                AddBefore(new_node, head);
-                head = new_node;
-                return;
-            }
-
             // основная часть
             Node<T> node = head;
             while (node != null && Le(node, new_node))
                 node = node.next;
             AddBefore(new_node, node);
+
         }
 
         private static void DeleteNode(Node<T> node)
