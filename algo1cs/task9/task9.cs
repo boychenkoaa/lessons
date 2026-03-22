@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace AlgorithmsDataStructures
 {
@@ -28,7 +28,8 @@ namespace AlgorithmsDataStructures
             // всегда возвращает корректный индекс слота
             if (key == "")
                 return 0;
-            return (key[0] + key[^1]) % _slots.Length;
+            int N = key.Length;
+            return (key[0] + key[N-1]) % _slots.Length;
         }
 
         public bool IsKey(string key)
@@ -36,7 +37,7 @@ namespace AlgorithmsDataStructures
             // возвращает true если ключ имеется,
             // иначе false
             int candidate = SeekSlot(key, slots);
-            return candidate >= 0 && slots[candidate] is not null;
+            return (candidate >= 0) && (slots[candidate] != null);
         }
 
 
@@ -45,9 +46,11 @@ namespace AlgorithmsDataStructures
             int new_size = 2 * size;
             string[] new_slots = new string[new_size];
             T[] new_values = new T[new_size];
-            foreach ((string k, T v) in slots.Zip(values).Where(pair => pair.First != null))
+            for (int i = 0; i < slots.Length; i++)
             {
-                int index = PutInto(k, v, new_slots, new_values);
+                if (slots[i] is null)
+                    continue;
+                int index = PutInto(slots[i], values[i], new_slots, new_values);
                 if (index == -1)
                     throw new Exception("Reallocation Error: new slots array is too small"); // такого случаться не должно, зачем тогда реаллокация
             }
@@ -107,7 +110,7 @@ namespace AlgorithmsDataStructures
             // возвращает value для key, 
             // или null если ключ не найден
             int candidate = SeekSlot(key, slots);
-            if (candidate >= 0 && slots[candidate] is not null)
+            if (candidate >= 0 && slots[candidate] != null)
                 return values[candidate];
             return default(T);
         }

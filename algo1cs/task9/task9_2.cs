@@ -1,11 +1,13 @@
-﻿namespace AlgorithmsDataStructures
+﻿using Xunit;
+
+namespace AlgorithmsDataStructures
 {
 
     public class UnitTest9
     {
         private static NativeDictionary<string> DictFromValues(int size, string[] keys)
         {
-            NativeDictionary<string> dict = new(size);
+            NativeDictionary<string> dict = new NativeDictionary<string>(size);
             foreach (string key in keys)
                 dict.Put(key, $"v-{key}");
             return dict;
@@ -35,7 +37,7 @@
         [InlineData("az", 5, 4)]
         public void TestHashFun(string key, int size, int expectedIndex)
         {
-            NativeDictionary<int> dict = new(size);
+            NativeDictionary<int> dict = new NativeDictionary<int>(size);
             Assert.Equal(expectedIndex, dict.HashFun(key));
         }
 
@@ -45,7 +47,7 @@
         [InlineData(new string[] { "a", "a", "a" }, new string[] { "a" })]
         public void TestPut(string[] inputKeys, string[] expectedKeys)
         {
-            NativeDictionary<string> dict = new(2*inputKeys.Length+1);
+            NativeDictionary<string> dict = new NativeDictionary<string>(2*inputKeys.Length+1);
             foreach (string key in inputKeys)
                 dict.Put(key, $"v-{key}");
 
@@ -71,7 +73,7 @@
         [InlineData(new string[] { "a", "b", "c", "d", "e", "f" }, 4, 8)]
         public void TestRealloc(string[] keys, int startSize, int expectedSize)
         {
-            NativeDictionary<string> dict = new(startSize);
+            NativeDictionary<string> dict = new NativeDictionary<string>(startSize);
             foreach (string key in keys)
                 dict.Put(key, $"v-{key}");
 
