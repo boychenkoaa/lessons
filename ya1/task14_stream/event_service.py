@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List
 from base import RobotState
 from events import Event, EventProcessor, ResultEvent, ResultEventApplier
 
-
+# реестр доменный (не шина так как нет обработки событий, только рассылка)
 class ProcessorRegistry:
     def __init__(self) -> None:
         self._subscribers: dict[type[Event], List[EventProcessor[Any]]] = {}
@@ -25,7 +25,7 @@ class ProcessorRegistry:
         return self.get_processors_for(type(event))
 
 
-# шина
+# шина инфраструктурная
 class InfrastructureEventBus:
     def __init__(self) -> None:
         self._subscribers: dict[type[Event], List[Callable[[Any], None]]] = {}
