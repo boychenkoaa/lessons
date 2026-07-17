@@ -10,13 +10,13 @@ def tag_base(tag: str, content: str) -> str:
 @curry(2)
 def add_attrs(attr: dict, s: str) -> str:
     attrs = " ".join(f'{k}="{v}"' for k, v in attr.items())
-    idx = s.index(">")
-    return f"{s[:idx]} {attrs}{s[idx:]}"
+    return s.replace(">", f" {attrs}>", 1)
 
 
 @curry(3)
 def tag(tag_value: str, attr: dict, content: str) -> str:
-    return Compose(tag_base(tag_value)).then(add_attrs(attr))(content)
+    pipe = Compose(tag_base(tag_value)).then(add_attrs(attr))
+    return pipe(content)
 
 
 def main():
