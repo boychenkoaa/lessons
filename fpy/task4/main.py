@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # вывод + проверка на совпадение типов
     print(j, type(j))               # Just 5 <class 'pymonad.maybe.Maybe'>
     print(new_j, type(new_j))       # Just 15 <class 'pymonad.maybe.Maybe'>
-    print(li, type(li))             # ListMonad(1, 2, 3) <class 'pymonad.list._List'>
-    print(new_li, type(new_li))     # ListMonad(11, 12, 13) <class 'pymonad.list._List'>
+    print(li, type(li))             # [1, 2, 3] <class 'pymonad.list._List'>
+    print(new_li, type(new_li))     # [11, 12, 13] <class 'pymonad.list._List'>
     print(nth, type(nth))           # Nothing <class 'pymonad.maybe.Maybe'>
     print(new_nth, type(new_nth))   # Nothing <class 'pymonad.maybe.Maybe'>
