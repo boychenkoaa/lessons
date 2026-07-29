@@ -7,37 +7,31 @@ from pymonad.state import State
 """
 Упрощенно имитируем игровой процесс диабло-1 :)
 
-действия:
-    - поднять вещь с земли,
-    - уложить в инвентарь,
-    - переложить из инвентаря в руку и обратно
-    - выпить баночку здоровья / маны
-    - получить урон в сражении (и умереть если урон больше текущего здоровья)
-
-Для умершего героя меняется состояние на is_alive = False и никакие действия не обсчитываются.
-Но делает это неудобно -- вместо Maybe-монады приходится использовать декораторы типа is_alive
+Лог событий накапливается в value State-монады, а не в GameState.
+Каждое действие получает накопленный лог через bind и дописывает своё событие.
 """
 
 # -- базовые классы --
 
-no_change = lambda: State(lambda s: (s, s))
+no_change = lambda: State(lambda s: ((), s))
 
 
-def set_state(new_state):
-     return State(lambda _: (new_state, new_state))
-
-# декоратор для действий только с живым персонажем
 def only_alive(action):
-    def inner(s):
-        return no_change() if not s.alive else action(s)
+    """Мёртв — лог и состояние не меняются. Жив — выполняем действие."""
+    def inner(log):
+        return State(lambda s:
+            (log, s) if not s.alive
+            else action(log).run(s)
+        )
     return inner
+
 
 # для cond
 class PairTuple(NamedTuple):
     pred: bool
     action: Callable
 
-# хочу как в лиспе. Для простоты - без отложенных вычислений.
+
 def cond(*pairs: PairTuple, default: Callable):
     for pair in pairs:
         if pair.pred:
@@ -48,7 +42,6 @@ def cond(*pairs: PairTuple, default: Callable):
 
 # -- домен --
 
-# оружие
 class Weapon(StrEnum):
     DAGGER = 'dagger'
     SWORD = 'sword'
@@ -58,13 +51,12 @@ class Weapon(StrEnum):
     STAFF = 'staff'
     NO_WEAPON = 'NO_WEAPON'
 
-# баночки
+
 class Potion(StrEnum):
     HEALTH = 'health_potion'
     MANA = 'mana_potion'
 
-# состояние игры
-# иммутабельно. Методы -- только запросы.
+
 @dataclass(frozen=True)
 class GameState:
     MAX_HP = 100
@@ -112,93 +104,127 @@ class GameState:
 
 # -- игровая логика --
 
-# действия
-
 def pickup(item):
     """Подобрать оружие с земли. Игнорирует, если инвентарь забит"""
     @only_alive
-    def inner(s):
-        if s._total_items() >= GameState.MAX_SLOTS:
-            return no_change()
-        return set_state(s.add_item(item))
+    def inner(log):
+        return State(lambda s: (
+            log + (f'инвентарь полон, {item} не подобран',),
+            s,
+        ) if s._total_items() >= GameState.MAX_SLOTS else (
+            log + (f'подобран {item}',),
+            s.add_item(item),
+        ))
     return inner
 
 
 def drop(item):
     """ Выбросить вещь из инвентаря / из руки """
     @only_alive
-    def inner(s):
-        return cond(
+    def inner(log):
+        return State(lambda s: cond(
             PairTuple(item == s.weapon and s.weapon is not Weapon.NO_WEAPON,
-                   lambda: set_state(replace(s, weapon=Weapon.NO_WEAPON))),
+                   lambda: (log + (f'выброшен {item} (из руки)',),
+                            replace(s, weapon=Weapon.NO_WEAPON))),
             PairTuple(s.has_item(item),
-                   lambda: set_state(s.remove_item(item))),
-            default=no_change,
-        )
+                   lambda: (log + (f'выброшен {item}',),
+                            s.remove_item(item))),
+            default=lambda: (log + (f'нечего выбрасывать: {item}',), s),
+        ))
     return inner
 
 
 def equip(weapon_name):
     """ Переложить в руку из инвентаря """
     @only_alive
-    def inner(s):
-        def do_equip():
-            s2 = s.remove_item(weapon_name)
-            if s.weapon is not Weapon.NO_WEAPON:
-                s2 = s2.add_item(s.weapon)
-            return set_state(replace(s2, weapon=weapon_name))
-
-        return cond(
-            PairTuple(weapon_name is Weapon.NO_WEAPON,              no_change),
-            PairTuple(not isinstance(weapon_name, Weapon),          no_change),
-            PairTuple(not s.has_item(weapon_name),                  no_change),
-            default=do_equip,
-        )
+    def inner(log):
+        return State(lambda s: cond(
+            PairTuple(weapon_name is Weapon.NO_WEAPON,
+                   lambda: (log + ('нельзя экипировать пустую руку',), s)),
+            PairTuple(not isinstance(weapon_name, Weapon),
+                   lambda: (log + (f'неизвестное оружие: {weapon_name}',), s)),
+            PairTuple(not s.has_item(weapon_name),
+                   lambda: (log + (f'нет в инвентаре: {weapon_name}',), s)),
+            default=lambda: _do_equip(log, s, weapon_name),
+        ))
     return inner
+
+
+def _do_equip(log, s, weapon_name):
+    s2 = s.remove_item(weapon_name)
+    old = s.weapon
+    if old is not Weapon.NO_WEAPON:
+        s2 = s2.add_item(old)
+    event = f'экипирован {weapon_name}'
+    if old is not Weapon.NO_WEAPON:
+        event += f' (старый {old} → инвентарь)'
+    return (log + (event,), replace(s2, weapon=weapon_name))
 
 
 def drink_health():
     """ пьем баночки здоровья """
     @only_alive
-    def inner(s):
-        if not s.has_item(Potion.HEALTH):
-            return no_change()
-        return set_state(replace(s.remove_item(Potion.HEALTH),
-            hp=min(s.hp + 30, GameState.MAX_HP)))
+    def inner(log):
+        return State(lambda s: (
+            log + ('нет баночек здоровья',), s,
+        ) if not s.has_item(Potion.HEALTH) else (
+            log + (f'+{min(s.hp + 30, GameState.MAX_HP) - s.hp} hp',),
+            replace(s.remove_item(Potion.HEALTH),
+                    hp=min(s.hp + 30, GameState.MAX_HP)),
+        ))
     return inner
 
 
 def drink_mana():
     """ пьем ману """
     @only_alive
-    def inner(s):
-        if not s.has_item(Potion.MANA):
-            return no_change()
-        return set_state(replace(s.remove_item(Potion.MANA),
-            mana=min(s.mana + 30, GameState.MAX_MANA)))
+    def inner(log):
+        return State(lambda s: (
+            log + ('нет баночек маны',), s,
+        ) if not s.has_item(Potion.MANA) else (
+            log + (f'+{min(s.mana + 30, GameState.MAX_MANA) - s.mana} mana',),
+            replace(s.remove_item(Potion.MANA),
+                    mana=min(s.mana + 30, GameState.MAX_MANA)),
+        ))
     return inner
 
 
 def take_damage(dmg):
-    """
-        расчет урона при сражении
-        если урон больше здоровья, умирает
-    """
+    """ расчет урона. Если урон > hp — смерть """
     @only_alive
-    def inner(s):
-        new_hp = s.hp - dmg
-        if new_hp <= 0:
-            return set_state(replace(s, hp=0, alive=False))
-        return set_state(replace(s, hp=new_hp))
+    def inner(log):
+        return State(lambda s: (
+            log + (f'-{s.hp} hp 💀 умер',),
+            replace(s, hp=0, alive=False),
+        ) if s.hp - dmg <= 0 else (
+            log + (f'-{dmg} hp',),
+            replace(s, hp=s.hp - dmg),
+        ))
     return inner
 
 
 def show():
-    """ вывод """
-    def inner(s):
-        print(s, '\n')
-        return no_change()
+    """ вывод состояния на экран (побочный эффект, лог не меняет) """
+    def inner(log):
+        return State(lambda s: (
+            print(s, '\n') or log,
+            s,
+        ))
     return inner
+
+
+def collect_log():
+    """ финальный шаг: лог из value наружу (уже и так там, просто заглушка) """
+    def inner(log):
+        return State(lambda s: (log, s))
+    return inner
+
+
+def print_log(log):
+    """Вывод лога на печать."""
+    print('Лог:')
+    for i, event in enumerate(log, 1):
+        print(f'  {i}. {event}')
 
 
 # ── точка входа ──
@@ -210,10 +236,16 @@ if __name__ == '__main__':
                       {Potion.HEALTH: 2, Potion.MANA: 2, Weapon.LONG_SWORD: 1})
 
     print('\nТест: перекладываем оружие')
-    (begin.bind(show()).bind(equip(Weapon.LONG_SWORD)).bind(show())).run(start)
+    log, final = (
+        begin.bind(show())
+        .bind(equip(Weapon.LONG_SWORD))
+        .bind(show())
+        .bind(collect_log())
+    ).run(start)
+    print_log(log)
 
-    print('\nТест: бой + пополняем здоровье здоровья')
-    (
+    print('\nТест: бой + пополняем здоровье')
+    log, final = (
         begin.bind(show())
         .bind(drink_health())
         .bind(show())
@@ -221,15 +253,19 @@ if __name__ == '__main__':
         .bind(show())
         .bind(drink_health())
         .bind(show())
+        .bind(collect_log())
     ).run(start)
+    print_log(log)
 
     print('\nТест: cмерть в бою')
-    (
+    log, final = (
         begin.bind(show())
-        .bind(take_damage(60))          # смерть
+        .bind(take_damage(60))
         .bind(show())
-        .bind(drink_health())           # мёртвый не пьёт
+        .bind(drink_health())
         .bind(show())
-        .bind(equip(Weapon.LONG_SWORD)) # мёртвый не меняет оружие
+        .bind(equip(Weapon.LONG_SWORD))
         .bind(show())
+        .bind(collect_log())
     ).run(start)
+    print_log(log)
