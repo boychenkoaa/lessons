@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "/c37e9R76MI=",
+  "success": true,
+  "projectFilePath": "E:\\p\\skillsmart\\lessons\\fs1\\fs1.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alex\\.nuget\\packages\\fsharp.core\\10.0.102\\fsharp.core.10.0.102.nupkg.sha512"
+  ],
+  "logs": []
+}
