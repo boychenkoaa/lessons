@@ -1,9 +1,8 @@
 *.tmp
-<<<<<<< HEAD
+*.sln*
 *.fsproj
 obj*
-=======
+
 fs1/bin/
 fs1/obj/
 fs1/out/
->>>>>>> 8e941e9355ebf4d94a61fa828935a030ef02005c
