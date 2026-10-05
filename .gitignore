@@ -1,5 +1,14 @@
 *.tmp
+*.sln*
+*.fsproj
+obj*
+
 fs1/bin/
 fs1/obj/
+<<<<<<< HEAD
 fs1/out/
 fs1/fs1.Tests/
+=======
+fs1/out
+fs1.Tests
+>>>>>>> 14039669dd35fc24f1a4565c4ffe1c499a05af8b
