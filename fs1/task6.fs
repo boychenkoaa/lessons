@@ -6,7 +6,7 @@ let rec pow (s, n) =
 
 
 // 17.2
-let rec isIthChr (s, n, c) = s.[n] = c
+let rec isIthChr (s: string, n, c) = s.[n] = c
 
 
 // 17.3
