@@ -1,5 +1,3 @@
-//module task6
-
 let rec pow (s, n) =
     match n with
     | 0 -> ""
