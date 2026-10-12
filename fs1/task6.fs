@@ -1,15 +1,12 @@
-// 17.1
+//module task6
+
 let rec pow (s, n) =
     match n with
     | 0 -> ""
     | n -> s + pow(s, n - 1)
 
+let rec isIthChar (s: string, n, c) = s.[n] = c
 
-// 17.2
-let rec isIthChr (s: string, n, c) = s.[n] = c
-
-
-// 17.3
 let rec occFromIth (s, n, c) =
     match n with
     | n when n >= String.length s -> 0
