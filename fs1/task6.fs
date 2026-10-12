@@ -1,3 +1,5 @@
+// module task6
+
 // 17.1
 let rec pow (s, n) =
     match n with
@@ -5,7 +7,8 @@ let rec pow (s, n) =
     | n -> s + pow(s, n - 1)
 
 // 17.2
-let rec isIthChar (s: string, n, c) = s.[n] = c
+let rec isIthChar (s, n, c) =
+    n >= 0 && n < String.length s && s.[n] = c
 
 // 17.3
 let rec occFromIth (s, n, c) =
