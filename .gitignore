@@ -3,7 +3,3 @@
 *.fsproj
 obj*
 *.log
-fs1/bin/
-fs1/obj/
-fs1/out/
-fs1/fs1.Tests/
