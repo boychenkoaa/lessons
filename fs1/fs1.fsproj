@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="task6.fs" />
+    <Compile Include="task7.fs" />
 
   </ItemGroup>
 

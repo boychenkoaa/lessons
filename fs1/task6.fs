@@ -1,4 +1,4 @@
-// module task6
+module task6
 
 // 17.1
 let rec pow (s, n) =
