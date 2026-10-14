@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="task6.fs" />
-    <Compile Include="task7.fs" />
+    <Compile Include="task8.fs" />
 
   </ItemGroup>
 
