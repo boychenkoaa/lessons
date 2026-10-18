@@ -16,7 +16,7 @@ let inv(a, b) =
     a/r, -b/r
 
 
-let (.+) x, y =
+let (.+) x y =
    let (a, b): float*float = x
    let (c, d): float*float = y
    a+c, b+d
