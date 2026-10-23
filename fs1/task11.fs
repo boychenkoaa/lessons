@@ -1,7 +1,6 @@
 (*
 0 <= hours <= 11
 0 <= minutes <= 59
-f in {"AM", "PM"}
 *)
 
 type F =
