@@ -7,4 +7,4 @@ let upto n = progression 1 1 n 1
 let dnto n = progression n -1 n 1
 
 // 34.3
-let revenn n = progression 0 2 n 1
+let evenn n = progression 0 2 n 1
