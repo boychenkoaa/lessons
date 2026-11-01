@@ -31,4 +31,5 @@ let split li =
 // 39.5
 let rec zip = function
     | [], [] -> []
-    | head1 :: tail1, head2 :: tail2 -> head1 :: head2 :: zip(tail1, tail2)
+    | head1 :: tail1, head2 :: tail2 -> (head1, head2) :: zip(tail1, tail2)
+    | _ -> failwith "unequal lists lengths"
