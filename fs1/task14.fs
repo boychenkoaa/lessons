@@ -36,13 +36,13 @@ let rec insert (xs, n) =
 // два индекса в рекурсивном исполнении)
 let rec intersect (xs1, xs2) =
     let rec intersect_base = function
-        | [], xs2, count -> count
-        | xs1, [], count -> count
-        | h1::t1, h2::t2, count ->
-            if h1 = h2 then intersect_base(t1, t2, count+1)
-            elif h1 < h2 then intersect_base(t1, h2::t2, count)
-            else intersect_base(h1::t1, t2, count)
-    intersect_base(xs1, xs2, 0)
+        | [], xs2, ans -> List.rev ans
+        | xs1, [], ans -> List.rev ans
+        | h1::t1, h2::t2, ans ->
+            if h1 = h2 then intersect_base(t1, t2, h1::ans)
+            elif h1 < h2 then intersect_base(t1, h2::t2, ans)
+            else intersect_base(h1::t1, t2, ans)
+    intersect_base(xs1, xs2, [])
 
 // 40.2.4 - объединение
 // ans - перевернутый хвост результата, перед возвратом реверсируем
@@ -73,10 +73,11 @@ let rec minus (xs1, xs2) =
 // минимум
 let rec smallest xs =
     let rec smallest_base = function
-        | [], ans -> ans
+        | [], ans -> Some(ans)
         | h::t, ans -> smallest_base (t, if h < ans then h else ans)
-    let h::t = xs
-    smallest_base(t, h)
+    match xs with
+        | [] -> None
+        | h::t -> smallest_base(t, h)
 
 // 40.3.2
 // удаление
@@ -89,10 +90,10 @@ let rec delete (n, xs) =
 
 // 40.3.3
 // сортировка
-let rec sort =  function
-    | [] -> []
-    | s -> let minimum = smallest s
-           minimum :: sort(delete(minimum, s))
+let rec sort s =
+    match smallest s with
+        | Some minimum -> minimum::sort(delete(minimum, s))
+        | None -> []
 
 // 40.4
 let rec revrev xs =

@@ -2,7 +2,7 @@ module MyTest
 
 let check name input expected actual =
     let success = expected = actual
-    let status = if success then "ОК" else "ERROR"
+    let status = if success then "ОК" else "----------- ERROR ----------"
 
     printfn "%s" name
     printfn "вход:      %s" input
@@ -21,5 +21,5 @@ let multicheck groupName tests =
             check name input expected actual)
 
     let success = results |> List.forall (fun result -> result)
-    let status = if success then "ОК" else "ERROR"
+    let status = if success then "ОК" else "---------- ERROR ----------"
     printfn "статус группы: %s" status
