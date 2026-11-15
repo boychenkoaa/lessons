@@ -3,3 +3,4 @@
 *.fsproj
 obj*
 *.log
+__pycache__/
