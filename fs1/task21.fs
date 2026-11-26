@@ -1,5 +1,5 @@
 // 50.2.1
-let fac_seq n = seq {
+let fac_seq = seq {
     let mutable f = 1
     let mutable i = 0
     while true do
@@ -9,7 +9,7 @@ let fac_seq n = seq {
 }
 
 // 50.2.2
-let seq_seq n = seq {
+let seq_seq = seq {
     let mutable i = 0
     while true do
         yield (i + i % 2) / 2 * (1 - 2 * (i % 2))
