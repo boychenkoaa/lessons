@@ -14,8 +14,8 @@ let tl (s : 'a cell) : Lazy<'a cell> =
 // 51.3
 let rec nth (s : 'a cell) (n : int) : 'a =
     match n with
-        0 -> hd s
-        n -> nth (tl s).Force() (n-1)
+        | 0 -> hd s
+        | n -> nth ((tl s).Force()) (n-1)
 
 // например, получить 30000-й элемент:
 // nth n0 30000
